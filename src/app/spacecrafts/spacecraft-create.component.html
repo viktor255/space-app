@@ -1,0 +1,79 @@
+<mat-card>
+  <h2 class="mat-h2">Create new spacefraft</h2>
+  <form (submit)="onSave(spacecraftForm)" class="example-form" #spacecraftForm="ngForm">
+    <mat-form-field class="example-full-width">
+      <input
+        ngModel
+        name="name"
+        matInput
+        type="text"
+        placeholder="Name"
+        required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]="3"
+        name="numOfSeats"
+        matInput
+        type="number"
+        placeholder="Number of seats"
+        required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]="3000"
+        name="fuelTankCapacity"
+        matInput
+        type="number"
+        placeholder="Fuel tank capacity"
+        required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]="1"
+        name="fuelConsumption"
+        matInput
+        type="number"
+        placeholder="Fuel consumption per 1 km"
+        required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]="100"
+        name="speed"
+        matInput
+        type="number"
+        placeholder="Speed"
+        required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]="1000"
+        name="maxLoad"
+        matInput
+        type="number"
+        placeholder="Maximum load"
+        required>
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]="100"
+        name="foodBoxCapacity"
+        matInput
+        type="number"
+        placeholder="Food box capacity"
+        required>
+    </mat-form-field>
+    <button
+      type="submit"
+      mat-raised-button
+      color="primary"
+    >Save
+    </button>
+  </form>
+</mat-card>

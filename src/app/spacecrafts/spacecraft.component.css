@@ -1,0 +1,9 @@
+.subCard {
+  min-width: 160px;
+}
+.mainCardTitle{
+  background: #e8e8e8;
+}
+mat-grid-tile {
+  /*background: #d0d0d0;*/
+}
