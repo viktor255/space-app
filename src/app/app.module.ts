@@ -14,6 +14,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './app.effects';
+ import { SpacecraftEffects } from './spacecrafts/spacecraft.effects';
+ import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -32,8 +34,11 @@ import { AppEffects } from './app.effects';
     MatGridListModule,
     MatExpansionModule,
     FormsModule,
+    HttpClientModule,
     StoreModule.forRoot(reducers, { metaReducers }),
+    // StoreModule.forFeature('spacecrafts', spacecraftReducer),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
+    EffectsModule.forFeature([SpacecraftEffects]),
     EffectsModule.forRoot([AppEffects])
   ],
   providers: [],

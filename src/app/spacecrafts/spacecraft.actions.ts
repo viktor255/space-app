@@ -2,11 +2,10 @@ import { Action } from '@ngrx/store';
 import { Spacecraft } from '../models/spacecraft.model';
 
 export enum SpacecraftActionTypes {
-  LoadSpacecrafts = '[Spacecraft] Load Spacecrafts',
-  CreateAction = '[Create] action',
-  DeleteAction = '[Delete] action',
-  AllSpacecraftsRequested = '[Spacecraft] All spacecrafts requested',
-  AllSpacecraftsLoaded = '[Spacecraft] All spacecrafts loaded',
+  CreateAction = '[Spacecraft Create] create spacecraft action',
+  DeleteAction = '[Spacecraft] delete spacecraft action',
+  AllSpacecraftsRequested = '[Spacecraft-list] All spacecrafts requested',
+  AllSpacecraftsLoaded = '[Spacecraft API] All spacecrafts loaded',
 }
 
 export class Create implements Action {
