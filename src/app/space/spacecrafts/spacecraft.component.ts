@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { Spacecraft } from '../models/spacecraft.model';
 import { Store } from '@ngrx/store';
-import { AppState } from '../reducers';
-import { Create, Delete } from './spacecraft.actions';
+import { AppState } from '../../reducers/index';
+import { Delete } from './spacecraft.actions';
 
 @Component({
   selector: 'app-spacecraft',

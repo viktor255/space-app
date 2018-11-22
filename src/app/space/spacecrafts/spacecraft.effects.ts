@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { AllSpacecraftsLoaded, AllSpacecraftsRequested, SpacecraftActionTypes } from './spacecraft.actions';
-import { filter, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
+import { filter, map, mergeMap, withLatestFrom } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Spacecraft } from '../models/spacecraft.model';
-import { AppState } from '../reducers';
+import { AppState } from '../../reducers/index';
 import { select, Store } from '@ngrx/store';
 import { allSpacecraftsLoaded } from './spacecraft.selectors';
 

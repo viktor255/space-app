@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Spacecraft } from '../models/spacecraft.model';
 import { Store } from '@ngrx/store';
-import { AppState } from '../reducers';
+import { AppState } from '../../reducers/index';
 import { Create } from './spacecraft.actions';
 
 @Component({
