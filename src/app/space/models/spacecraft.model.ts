@@ -1,5 +1,5 @@
 export interface Spacecraft {
-  id: string;
+  _id: string;
   name: string;
   numberOfSeats: number;
   fuelTankCapacity: number;

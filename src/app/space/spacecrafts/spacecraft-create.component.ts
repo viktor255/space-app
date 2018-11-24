@@ -19,7 +19,7 @@ export class SpacecraftCreateComponent {
       return;
     }
     const newSpacecraft: Spacecraft = {
-      id: 'dummy',
+      _id: 'dummy',
       name: form.value.name,
       numberOfSeats: form.value.numOfSeats,
       fuelTankCapacity: form.value.fuelTankCapacity,

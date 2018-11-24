@@ -17,6 +17,6 @@ export class SpacecraftComponent {
   @Input() spacecraft: Spacecraft;
 
   onDelete() {
-    this.store.dispatch(new Delete({spacecraft: this.spacecraft}));
+    this.store.dispatch(new Delete({_id: this.spacecraft._id}));
   }
 }

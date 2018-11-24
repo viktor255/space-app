@@ -6,7 +6,9 @@ export interface SpacecraftState extends EntityState<Spacecraft> {
   allSpacecraftsLoaded: boolean;
 }
 
-export const adapter: EntityAdapter<Spacecraft> = createEntityAdapter<Spacecraft>();
+export const adapter: EntityAdapter<Spacecraft> = createEntityAdapter<Spacecraft>({
+  selectId: (spacecraft: Spacecraft) => spacecraft._id,
+});
 
 const initialSpacecraftState: SpacecraftState = adapter.getInitialState({
   allSpacecraftsLoaded: false
@@ -14,11 +16,11 @@ const initialSpacecraftState: SpacecraftState = adapter.getInitialState({
 
 export function spacecraftReducer(state: SpacecraftState = initialSpacecraftState, action: SpacecraftActions): SpacecraftState {
   switch (action.type) {
-    case SpacecraftActionTypes.CreateAction: {
+    case SpacecraftActionTypes.CreateActionSuccessful: {
       return adapter.addOne(action.payload.spacecraft, state);
     }
-    case SpacecraftActionTypes.DeleteAction: {
-      return adapter.removeOne(action.payload.spacecraft.id, state);
+    case SpacecraftActionTypes.DeleteActionSuccessful: {
+      return adapter.removeOne(action.payload._id, state);
     }
     case SpacecraftActionTypes.AllSpacecraftsLoaded: {
       return adapter.addAll(action.payload.spacecrafts, {...state, allSpacecraftsLoaded: true});
