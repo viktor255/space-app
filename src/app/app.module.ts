@@ -10,14 +10,20 @@ import { AppEffects } from './app.effects';
 import { AngularMaterialModule } from './angular-material.module';
 import { SpaceModule } from './space/space.module';
 import { BrowserModule } from '@angular/platform-browser';
+import { AuthModule } from './auth/auth.module';
+import { AppRoutingModule } from './app-routing.module';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     SpaceModule,
+    AuthModule,
     AngularMaterialModule,
     StoreModule.forRoot(reducers, {metaReducers}),
     !environment.production ? StoreDevtoolsModule.instrument() : [],

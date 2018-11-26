@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { Spacecraft } from '../models/spacecraft.model';
+import { Spacecraft } from '../../models/spacecraft.model';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../reducers/index';
-import { Delete } from './spacecraft.actions';
+import { AppState } from '../../../reducers/index';
+import { Delete } from '../spacecraft.actions';
 
 @Component({
   selector: 'app-spacecraft',
@@ -18,5 +18,9 @@ export class SpacecraftComponent {
 
   onDelete() {
     this.store.dispatch(new Delete({_id: this.spacecraft._id}));
+  }
+
+  onEdit() {
+
   }
 }

@@ -3,17 +3,16 @@
   <form (submit)="onSave(spacecraftForm)" class="example-form" #spacecraftForm="ngForm">
     <mat-form-field class="example-full-width">
       <input
-        ngModel
+        [ngModel]="defaultSpacecraft.name"
         name="name"
         matInput
         type="text"
         placeholder="Name"
         required>
     </mat-form-field>
-
     <mat-form-field class="example-full-width">
       <input
-        [ngModel]="3"
+        [ngModel]=defaultSpacecraft.numberOfSeats
         name="numOfSeats"
         matInput
         type="number"
@@ -23,7 +22,7 @@
 
     <mat-form-field class="example-full-width">
       <input
-        [ngModel]="3000"
+        [ngModel]=defaultSpacecraft.fuelTankCapacity
         name="fuelTankCapacity"
         matInput
         type="number"
@@ -33,7 +32,7 @@
 
     <mat-form-field class="example-full-width">
       <input
-        [ngModel]="1"
+        [ngModel]=defaultSpacecraft.fuelConsumption
         name="fuelConsumption"
         matInput
         type="number"
@@ -43,7 +42,7 @@
 
     <mat-form-field class="example-full-width">
       <input
-        [ngModel]="100"
+        [ngModel]=defaultSpacecraft.speed
         name="speed"
         matInput
         type="number"
@@ -53,7 +52,7 @@
 
     <mat-form-field class="example-full-width">
       <input
-        [ngModel]="1000"
+        [ngModel]=defaultSpacecraft.maximumLoad
         name="maxLoad"
         matInput
         type="number"
@@ -62,7 +61,7 @@
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <input
-        [ngModel]="100"
+        [ngModel]=defaultSpacecraft.foodBoxCapacity
         name="foodBoxCapacity"
         matInput
         type="number"

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
-import { SpacecraftComponent } from './spacecrafts/spacecraft.component';
-import { SpacecraftCreateComponent } from './spacecrafts/spacecraft-create.component';
-import { SpacecraftListComponent } from './spacecrafts/spacecraft-list.component';
+import { SpacecraftComponent } from './spacecrafts/spacecraft/spacecraft.component';
+import { SpacecraftCreateComponent } from './spacecrafts/spacecraft-create/spacecraft-create.component';
+import { SpacecraftListComponent } from './spacecrafts/spacecraft-list/spacecraft-list.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,7 @@ import { SpacecraftEffects } from './spacecrafts/spacecraft.effects';
 import { StoreModule } from '@ngrx/store';
 import { AngularMaterialModule } from '../angular-material.module';
 import { spacecraftReducer } from './reducers/spacecrafts.reducers';
+import { AppRoutingModule } from '../app-routing.module';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { spacecraftReducer } from './reducers/spacecrafts.reducers';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    AppRoutingModule,
     FormsModule,
     AngularMaterialModule,
     HttpClientModule,

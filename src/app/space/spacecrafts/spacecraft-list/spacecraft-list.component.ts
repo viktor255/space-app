@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Spacecraft } from '../models/spacecraft.model';
+import { Spacecraft } from '../../models/spacecraft.model';
 import { select, Store } from '@ngrx/store';
-import { AppState } from '../../reducers/index';
+import { AppState } from '../../../reducers/index';
 import { Observable } from 'rxjs';
-import { AllSpacecraftsRequested } from './spacecraft.actions';
-import { selectAllSpacecrafts } from './spacecraft.selectors';
+import { AllSpacecraftsRequested } from '../spacecraft.actions';
+import { selectAllSpacecrafts } from '../spacecraft.selectors';
 
 @Component({
   selector: 'app-spacecraft-list',
@@ -21,6 +21,7 @@ export class SpacecraftListComponent implements OnInit {
     this.store.dispatch(new AllSpacecraftsRequested());
 
     this.spacecrafts$ = this.store.pipe(select(selectAllSpacecrafts));
+    console.log(this.spacecrafts$);
   }
 
 
