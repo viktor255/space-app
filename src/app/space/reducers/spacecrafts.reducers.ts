@@ -22,6 +22,9 @@ export function spacecraftReducer(state: SpacecraftState = initialSpacecraftStat
     case SpacecraftActionTypes.DeleteActionSuccessful: {
       return adapter.removeOne(action.payload._id, state);
     }
+    case SpacecraftActionTypes.UpdateActionSuccessful: {
+      return adapter.updateOne({id: action.payload.spacecraft._id, changes: action.payload.spacecraft}, state);
+    }
     case SpacecraftActionTypes.AllSpacecraftsLoaded: {
       return adapter.addAll(action.payload.spacecrafts, {...state, allSpacecraftsLoaded: true});
     }

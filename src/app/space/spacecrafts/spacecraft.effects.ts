@@ -6,7 +6,7 @@ import {
   Create,
   CreateSuccessful,
   Delete, DeleteSuccessful,
-  SpacecraftActionTypes
+  SpacecraftActionTypes, Update, UpdateSuccessful
 } from './spacecraft.actions';
 import { filter, map, mergeMap, withLatestFrom } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -36,7 +36,7 @@ export class SpacecraftEffects {
     .pipe(
       ofType<Create>(SpacecraftActionTypes.CreateAction),
       mergeMap((action) => this.createSpacecraft(action.payload.spacecraft)),
-      map((spacecraftJSON: {spacecraft: Spacecraft}) => new CreateSuccessful({spacecraft: spacecraftJSON.spacecraft}))
+      map((spacecraftJSON: { spacecraft: Spacecraft }) => new CreateSuccessful({spacecraft: spacecraftJSON.spacecraft}))
     );
 
   @Effect()
@@ -44,8 +44,17 @@ export class SpacecraftEffects {
     .pipe(
       ofType<Delete>(SpacecraftActionTypes.DeleteAction),
       mergeMap((action) => this.deleteSpacecraft(action.payload._id)),
-      map((idJSON: {_id: string}) => new DeleteSuccessful({_id: idJSON._id}))
+      map((idJSON: { _id: string }) => new DeleteSuccessful({_id: idJSON._id}))
     );
+
+  @Effect()
+  updateSpacecraft$ = this.actions$
+    .pipe(
+      ofType<Update>(SpacecraftActionTypes.UpdateAction),
+      mergeMap((action) => this.updateSpacecraft(action.payload.spacecraft)),
+      map((spacecraftJSON: { spacecraft: Spacecraft }) => new UpdateSuccessful({spacecraft: spacecraftJSON.spacecraft}))
+    );
+
 
   getSpacecrafts() {
     return this.httpClient.get<{ message: string, spacecrafts: Spacecraft[] }>('http://localhost:3000/api/spacecrafts');
@@ -53,6 +62,10 @@ export class SpacecraftEffects {
 
   createSpacecraft(spacecraft: Spacecraft) {
     return this.httpClient.post('http://localhost:3000/api/spacecrafts', spacecraft);
+  }
+
+  updateSpacecraft(spacecraft: Spacecraft) {
+    return this.httpClient.put('http://localhost:3000/api/spacecrafts/' + spacecraft._id, spacecraft);
   }
 
   deleteSpacecraft(id: string) {

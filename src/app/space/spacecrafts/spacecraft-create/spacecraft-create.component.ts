@@ -3,10 +3,10 @@ import { NgForm } from '@angular/forms';
 import { Spacecraft } from '../../models/spacecraft.model';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../../../reducers/index';
-import { Create } from '../spacecraft.actions';
+import { AllSpacecraftsRequested, Create, Update } from '../spacecraft.actions';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs';
-import { selectAllSpacecrafts, selectSpacecraftById } from '../spacecraft.selectors';
+import { selectSpacecraftById } from '../spacecraft.selectors';
 
 @Component({
   selector: 'app-spacecraft-create',
@@ -25,12 +25,14 @@ export class SpacecraftCreateComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
         if (paramMap.has('spacecraftId')) {
+          this.store.dispatch(new AllSpacecraftsRequested());
           this.mode = 'edit';
           this.spacecraftId = paramMap.get('spacecraftId');
           this.spacecraftToEdit$ = this.store.pipe(select(selectSpacecraftById(this.spacecraftId)));
           this.spacecraftToEdit$.subscribe(spacecraft => {
             this.defaultSpacecraft = spacecraft;
           });
+
         } else {
           this.defaultSpacecraft = {
             _id: 'dummy',
@@ -54,7 +56,22 @@ export class SpacecraftCreateComponent implements OnInit {
     if (form.invalid) {
       return;
     }
-    this.store.dispatch(new Create({spacecraft: this.defaultSpacecraft}));
+    this.defaultSpacecraft = {
+      _id: this.spacecraftId,
+      name: form.value.name,
+      numberOfSeats: form.value.numberOfSeats,
+      fuelTankCapacity: form.value.fuelTankCapacity,
+      fuel: 0,
+      fuelConsumption: form.value.fuelConsumption,
+      speed: form.value.speed,
+      maximumLoad: form.value.maximumLoad,
+      foodBoxCapacity: form.value.foodBoxCapacity
+    };
+    if (this.mode === 'create') {
+      this.store.dispatch(new Create({spacecraft: this.defaultSpacecraft}));
+    } else {
+      this.store.dispatch(new Update({spacecraft: this.defaultSpacecraft}));
+    }
 
     console.log(this.defaultSpacecraft);
   }
