@@ -11,6 +11,7 @@ import { selectAllSpacecrafts } from '../spacecraft.selectors';
   templateUrl: './spacecraft-list.component.html'
 })
 export class SpacecraftListComponent implements OnInit {
+
   constructor(private store: Store<AppState>) {
   }
 
@@ -19,9 +20,7 @@ export class SpacecraftListComponent implements OnInit {
   ngOnInit() {
 
     this.store.dispatch(new AllSpacecraftsRequested());
-
     this.spacecrafts$ = this.store.pipe(select(selectAllSpacecrafts));
-    console.log(this.spacecrafts$);
   }
 
 

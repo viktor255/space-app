@@ -1,6 +1,7 @@
 <mat-card>
-  <h2 class="mat-h2">Create new spacefraft</h2>
-  <form (submit)="onSave(spacecraftForm)" class="example-form" #spacecraftForm="ngForm">
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <h2 class="mat-h2">{{mode}} spacecraft</h2>
+  <form (submit)="onSave(spacecraftForm)" class="example-form" #spacecraftForm="ngForm" *ngIf="!isLoading">
     <mat-form-field class="example-full-width">
       <input
         [ngModel]="defaultSpacecraft.name"

@@ -2,18 +2,19 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import {
   AllSpacecraftsLoaded,
-  AllSpacecraftsRequested,
+  AllSpacecraftsRequested, BackendError,
   Create,
   CreateSuccessful,
   Delete, DeleteSuccessful,
   SpacecraftActionTypes, Update, UpdateSuccessful
 } from './spacecraft.actions';
-import { filter, map, mergeMap, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Spacecraft } from '../models/spacecraft.model';
 import { AppState } from '../../reducers/index';
 import { select, Store } from '@ngrx/store';
 import { allSpacecraftsLoaded } from './spacecraft.selectors';
+import { of } from 'rxjs';
 
 @Injectable()
 export class SpacecraftEffects {
@@ -27,32 +28,60 @@ export class SpacecraftEffects {
       ofType<AllSpacecraftsRequested>(SpacecraftActionTypes.AllSpacecraftsRequested),
       withLatestFrom(this.store.pipe(select(allSpacecraftsLoaded))),
       filter(([action, allSpacecraftsLoadedBool]) => !allSpacecraftsLoadedBool),
-      mergeMap((action) => this.getSpacecrafts()),
-      map(spacecraftObject => new AllSpacecraftsLoaded({spacecrafts: spacecraftObject.spacecrafts}))
+      mergeMap((action) => this.getSpacecrafts()
+        .pipe(
+          map(spacecraftObject => new AllSpacecraftsLoaded({spacecrafts: spacecraftObject.spacecrafts})),
+          catchError((error) => {
+            this.store.dispatch(new BackendError({error: error}));
+            return of();
+          })
+        )
+      ),
     );
 
   @Effect()
   createSpacecraft$ = this.actions$
     .pipe(
       ofType<Create>(SpacecraftActionTypes.CreateAction),
-      mergeMap((action) => this.createSpacecraft(action.payload.spacecraft)),
-      map((spacecraftJSON: { spacecraft: Spacecraft }) => new CreateSuccessful({spacecraft: spacecraftJSON.spacecraft}))
+      mergeMap((action) => this.createSpacecraft(action.payload.spacecraft)
+        .pipe(
+          map((spacecraftJSON: { spacecraft: Spacecraft }) => new CreateSuccessful({spacecraft: spacecraftJSON.spacecraft})),
+          catchError((error) => {
+            this.store.dispatch(new BackendError({error: error}));
+            return of();
+          })
+        )
+      ),
     );
 
   @Effect()
   deleteSpacecraft$ = this.actions$
     .pipe(
       ofType<Delete>(SpacecraftActionTypes.DeleteAction),
-      mergeMap((action) => this.deleteSpacecraft(action.payload._id)),
-      map((idJSON: { _id: string }) => new DeleteSuccessful({_id: idJSON._id}))
+      mergeMap((action) => this.deleteSpacecraft(action.payload._id)
+        .pipe(
+          map((idJSON: { _id: string }) => new DeleteSuccessful({_id: idJSON._id})),
+          catchError((error) => {
+            this.store.dispatch(new BackendError({error: error}));
+            return of();
+          })
+        )
+      ),
     );
 
   @Effect()
   updateSpacecraft$ = this.actions$
     .pipe(
       ofType<Update>(SpacecraftActionTypes.UpdateAction),
-      mergeMap((action) => this.updateSpacecraft(action.payload.spacecraft)),
-      map((spacecraftJSON: { spacecraft: Spacecraft }) => new UpdateSuccessful({spacecraft: spacecraftJSON.spacecraft}))
+      mergeMap((action) => this.updateSpacecraft(action.payload.spacecraft)
+        .pipe(
+          map((spacecraftJSON: { spacecraft: Spacecraft }) => new UpdateSuccessful({spacecraft: spacecraftJSON.spacecraft})),
+          catchError((error) => {
+            this.store.dispatch(new BackendError({error: error}));
+            return of();
+          })
+        )
+      ),
     );
 
 

@@ -2,9 +2,12 @@ const express = require('express');
 
 const Spacecraft = require('../models/spacecraft');
 
+const checkAuth = require('../middleware/check-auth');
+
 const router = express.Router();
 
-router.post('', (req, res, next) => {
+
+router.post('', checkAuth, (req, res, next) => {
   const spacecraft = new Spacecraft({
     name: req.body.name,
     numberOfSeats: req.body.numberOfSeats,
@@ -21,7 +24,7 @@ router.post('', (req, res, next) => {
   });
 });
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', checkAuth, (req, res, next) => {
   const spacecraft = new Spacecraft({
     _id: req.body._id,
     name: req.body.name,
@@ -33,14 +36,14 @@ router.put('/:id', (req, res, next) => {
     maximumLoad: req.body.maximumLoad,
     foodBoxCapacity: req.body.foodBoxCapacity
   });
-  Spacecraft.update({_id: req.params.id}, spacecraft).then(result => {
+  Spacecraft.updateOne({_id: req.params.id}, spacecraft).then(result => {
     res.status(200).json({
       spacecraft: spacecraft
     });
   })
 });
 
-router.get('', (req, res, next) => {
+router.get('', checkAuth, (req, res, next) => {
   Spacecraft.find().then(spacecrafts => {
     res.status(200).json({
       message: 'Spacecrats fetched succsesfully!',
@@ -49,7 +52,7 @@ router.get('', (req, res, next) => {
   });
 });
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', checkAuth, (req, res, next) => {
   Spacecraft.deleteOne({_id: req.params.id})
     .then(result => {
       res.status(200).json({_id: req.params.id});

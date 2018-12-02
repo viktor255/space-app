@@ -4,7 +4,7 @@ import { Spacecraft } from '../../models/spacecraft.model';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../../../reducers/index';
 import { AllSpacecraftsRequested, Create, Update } from '../spacecraft.actions';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { selectSpacecraftById } from '../spacecraft.selectors';
 
@@ -14,23 +14,28 @@ import { selectSpacecraftById } from '../spacecraft.selectors';
   styleUrls: ['./spacecraft-create.component.css']
 })
 export class SpacecraftCreateComponent implements OnInit {
-  private mode = 'create';
+  public mode = 'Create';
   private spacecraftId: string;
   private spacecraftToEdit$: Observable<Spacecraft>;
   public defaultSpacecraft: Spacecraft;
+  public isLoading = true;
 
-  constructor(private store: Store<AppState>, public route: ActivatedRoute) {
+  constructor(private store: Store<AppState>, public route: ActivatedRoute, private router: Router) {
   }
 
   ngOnInit() {
+
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
         if (paramMap.has('spacecraftId')) {
           this.store.dispatch(new AllSpacecraftsRequested());
-          this.mode = 'edit';
+          this.mode = 'Edit';
           this.spacecraftId = paramMap.get('spacecraftId');
           this.spacecraftToEdit$ = this.store.pipe(select(selectSpacecraftById(this.spacecraftId)));
           this.spacecraftToEdit$.subscribe(spacecraft => {
             this.defaultSpacecraft = spacecraft;
+            if (spacecraft !== undefined) {
+              this.isLoading = false;
+            }
           });
 
         } else {
@@ -45,8 +50,9 @@ export class SpacecraftCreateComponent implements OnInit {
             maximumLoad: 1000,
             foodBoxCapacity: 200
           };
+          this.isLoading = false;
           this.spacecraftId = null;
-          this.mode = 'create';
+          this.mode = 'Create';
         }
       }
     );
@@ -67,12 +73,13 @@ export class SpacecraftCreateComponent implements OnInit {
       maximumLoad: form.value.maximumLoad,
       foodBoxCapacity: form.value.foodBoxCapacity
     };
-    if (this.mode === 'create') {
+    if (this.mode === 'Create') {
       this.store.dispatch(new Create({spacecraft: this.defaultSpacecraft}));
     } else {
       this.store.dispatch(new Update({spacecraft: this.defaultSpacecraft}));
     }
 
     console.log(this.defaultSpacecraft);
+    this.router.navigateByUrl('/');
   }
 }
