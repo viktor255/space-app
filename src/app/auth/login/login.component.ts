@@ -10,10 +10,8 @@ import { tokenSelector } from '../auth.selector';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   isLoading = false;
-  public token$;
-  public token;
 
   constructor(private store: Store<AppState>) {
   }
@@ -28,8 +26,5 @@ export class LoginComponent implements OnInit {
     this.store.dispatch(new Login({authData: authData}));
   }
 
-  ngOnInit() {
-    this.token$ = this.store.pipe(select(tokenSelector));
-  }
 
 }

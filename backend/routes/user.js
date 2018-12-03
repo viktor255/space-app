@@ -16,7 +16,7 @@ router.post('/signup', (req, res, next) => {
         .then(result => {
           console.log('User created');
           console.log(result);
-          return res.status(200);
+          res.status(201).send();
         })
         .catch(err => {
           res.status(500).json({
@@ -50,7 +50,8 @@ router.post('/login', (req, res, next) => {
           email: fetchedUser.email,
           token: token,
           role: fetchedUser.role
-        }
+        },
+        expiresIn: 3600
       });
 
     })

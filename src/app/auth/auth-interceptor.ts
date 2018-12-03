@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AppState } from '../reducers';
 import { select, Store } from '@ngrx/store';
 import { tokenSelector } from './auth.selector';
-import { first, flatMap, map, mergeMap, switchMap, take } from 'rxjs/operators';
+import { first, flatMap } from 'rxjs/operators';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -11,6 +11,7 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
+    // return next.handle(req);
     return this.store.pipe(
       select(tokenSelector),
       first(),
