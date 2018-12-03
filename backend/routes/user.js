@@ -49,9 +49,9 @@ router.post('/login', (req, res, next) => {
         user: {
           email: fetchedUser.email,
           token: token,
-          role: fetchedUser.role
-        },
-        expiresIn: 3600
+          role: fetchedUser.role,
+          expiresIn: Date.now() + 3600*1000
+        }
       });
 
     })

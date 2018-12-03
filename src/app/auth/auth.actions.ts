@@ -33,7 +33,7 @@ export class Login implements Action {
 
 export class LoginSuccessful implements Action {
   readonly type = AuthActionTypes.LoginActionSuccessful;
-  constructor(public readonly payload: {user: User, expiresIn: number}) {}
+  constructor(public readonly payload: {user: User}) {}
 }
 
 export class LoginError implements Action {

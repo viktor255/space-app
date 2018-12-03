@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Login } from '../auth.actions';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { AppState } from '../../reducers';
 import { AuthData } from '../auth-data.model';
-import { tokenSelector } from '../auth.selector';
 
 @Component({
   templateUrl: './login.component.html',
