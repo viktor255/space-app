@@ -37,7 +37,7 @@ router.post('/signup', (req, res, next) => {
               secure: false,
               auth: {
                 user: 'apikey',
-                pass: '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'
+                pass: 'dummy'
               }
             });
 
@@ -46,7 +46,7 @@ router.post('/signup', (req, res, next) => {
               to: user.email,
               subject: 'Space-app: Account Verification Token',
               text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/'
-                + req.headers.host + '\/confirmation\/' + token.token + '.\n'
+                + req.headers.host + '\/api\/auth\/confirmation\/' + token.token + '.\n'
             };
             transporter.sendMail(mailOptions, function (err) {
               if (err) {
