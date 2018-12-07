@@ -13,7 +13,13 @@
       <mat-error *ngIf="passwordInput.invalid">Please enter a valid password.</mat-error>
     </mat-form-field>
     </div>
-    <button mat-raised-button color="accent" type="submit" *ngIf="!isLoading">Login</button>
+    <div class="buttons">
+    <button mat-raised-button color="accent" type="submit" [disabled]="!loginForm.valid">Login</button>
+
+    <span class="spacer"></span>
+    <a><button mat-button color="basic" type="button"  [disabled]="emailInput.invalid" (click)="onResetPassword(loginForm)">Reset password</button></a>
+    <a><button mat-button color="basic" type="button" [disabled]="emailInput.invalid" (click)="onResendToken(loginForm)">Resend token</button></a>
+    </div>
 
   </form>
 

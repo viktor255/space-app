@@ -15,6 +15,9 @@ import { AppState } from '../../reducers/index';
 import { select, Store } from '@ngrx/store';
 import { allSpacecraftsLoaded } from './spacecraft.selectors';
 import { of } from 'rxjs';
+import { environment } from '../../../environments/environment';
+
+const BACKEND_URL = environment.apiUrl + '/spacecrafts/';
 
 @Injectable()
 export class SpacecraftEffects {
@@ -90,15 +93,15 @@ export class SpacecraftEffects {
   }
 
   createSpacecraft(spacecraft: Spacecraft) {
-    return this.httpClient.post('http://localhost:3000/api/spacecrafts', spacecraft);
+    return this.httpClient.post(BACKEND_URL, spacecraft);
   }
 
   updateSpacecraft(spacecraft: Spacecraft) {
-    return this.httpClient.put('http://localhost:3000/api/spacecrafts/' + spacecraft._id, spacecraft);
+    return this.httpClient.put(BACKEND_URL + spacecraft._id, spacecraft);
   }
 
   deleteSpacecraft(id: string) {
-    return this.httpClient.delete('http://localhost:3000/api/spacecrafts/' + id);
+    return this.httpClient.delete(BACKEND_URL + id);
   }
 
 

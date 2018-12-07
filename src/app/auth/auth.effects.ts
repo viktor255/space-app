@@ -4,11 +4,31 @@ import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { AppState } from '../reducers';
 import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
-import { AuthActionTypes, Login, LoginError, LoginSuccessful, Logout, Signup, SignupError, SignupSuccessful } from './auth.actions';
+import {
+  AuthActionTypes,
+  Login,
+  LoginError,
+  LoginSuccessful,
+  Logout,
+  ResendToken,
+  ResendTokenError,
+  ResendTokenSuccessful,
+  ResetPassword,
+  ResetPasswordError,
+  ResetPasswordSuccessful,
+  ResetPasswordToken, ResetPasswordTokenError,
+  ResetPasswordTokenSuccessful,
+  Signup,
+  SignupError,
+  SignupSuccessful
+} from './auth.actions';
 import { User } from '../models/user.model';
 import { defer, of } from 'rxjs';
 import { AuthData } from './auth-data.model';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
+
+const BACKEND_URL = environment.apiUrl + '/auth/';
 
 
 @Injectable()
@@ -37,25 +57,27 @@ export class AuthEffects {
 
 
   @Effect({dispatch: false})
-  loginSuccessful$ = this.actions$.pipe(
-    ofType<LoginSuccessful>(AuthActionTypes.LoginActionSuccessful),
-    tap((action) => {
-      console.log('Login successful side effect');
-      const expiresIn = action.payload.user.expiresIn - Date.now();
-      this.setAuthTimer(expiresIn / 1000);
-      localStorage.setItem('user', JSON.stringify(action.payload.user));
-      this.router.navigateByUrl('/');
-    })
-  );
+  loginSuccessful$ = this.actions$
+    .pipe(
+      ofType<LoginSuccessful>(AuthActionTypes.LoginActionSuccessful),
+      tap((action) => {
+        console.log('Login successful side effect');
+        const expiresIn = action.payload.user.expiresIn - Date.now();
+        this.setAuthTimer(expiresIn / 1000);
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
+        this.router.navigateByUrl('/');
+      })
+    );
 
   @Effect({dispatch: false})
-  logout$ = this.actions$.pipe(
-    ofType<Logout>(AuthActionTypes.LogoutAction),
-    tap(() => {
-      localStorage.removeItem('user');
-      this.router.navigateByUrl('/login');
-    })
-  );
+  logout$ = this.actions$
+    .pipe(
+      ofType<Logout>(AuthActionTypes.LogoutAction),
+      tap(() => {
+        localStorage.removeItem('user');
+        this.router.navigateByUrl('/login');
+      })
+    );
 
   @Effect()
   signupUser$ = this.actions$
@@ -63,7 +85,7 @@ export class AuthEffects {
       ofType<Signup>(AuthActionTypes.SignupAction),
       switchMap((action) => this.signupUser(action.payload.authData)
         .pipe(
-          map((sometig) => new SignupSuccessful()),
+          map(() => new SignupSuccessful()),
           catchError((error) => {
             this.store.dispatch(new SignupError({error: error}));
             return of();
@@ -89,6 +111,51 @@ export class AuthEffects {
       ),
     );
 
+  @Effect()
+  resetPasswordToken$ = this.actions$
+    .pipe(
+      ofType<ResetPasswordToken>(AuthActionTypes.ResetPasswordTokenAction),
+      switchMap((action) => this.resetPasswordToken(action.payload.authData)
+        .pipe(
+          map(() => new ResetPasswordTokenSuccessful()),
+          catchError((error) => {
+            this.store.dispatch(new ResetPasswordTokenError({error: error}));
+            return of();
+          })
+        )
+      ),
+    );
+
+  @Effect()
+  resetPassword$ = this.actions$
+    .pipe(
+      ofType<ResetPassword>(AuthActionTypes.ResetPasswordAction),
+      switchMap((action) => this.resetPassword(action.payload.authData, action.payload.token)
+        .pipe(
+          map(() => new ResetPasswordSuccessful()),
+          catchError((error) => {
+            this.store.dispatch(new ResetPasswordError({error: error}));
+            return of();
+          })
+        )
+      ),
+    );
+
+  @Effect()
+  resendToken$ = this.actions$
+    .pipe(
+      ofType<ResendToken>(AuthActionTypes.ResendTokenAction),
+      switchMap((action) => this.resendToken(action.payload.authData)
+        .pipe(
+          map(() => new ResendTokenSuccessful()),
+          catchError((error) => {
+            this.store.dispatch(new ResendTokenError({error: error}));
+            return of();
+          })
+        )
+      ),
+    );
+
   private setAuthTimer(duration: number) {
     console.log('Setting timer: ' + duration);
     this.tokenTimer = setTimeout(() => {
@@ -97,11 +164,23 @@ export class AuthEffects {
   }
 
   signupUser(authData: AuthData) {
-    return this.httpClient.post('http://localhost:3000/api/auth/signup', authData);
+    return this.httpClient.post(BACKEND_URL + 'signup', authData);
   }
 
   loginUser(authData: AuthData) {
-    return this.httpClient.post('http://localhost:3000/api/auth/login', authData);
+    return this.httpClient.post(BACKEND_URL + 'login', authData);
+  }
+
+  resendToken(authData: AuthData) {
+    return this.httpClient.post(BACKEND_URL + 'resend', authData);
+  }
+
+  resetPasswordToken(authData: AuthData) {
+    return this.httpClient.post(BACKEND_URL + 'sendResetPasswordToken', authData);
+  }
+
+  resetPassword(authData: AuthData, token: string) {
+    return this.httpClient.post(BACKEND_URL + 'changePassword', {password: authData.password, token: token});
   }
 
 }

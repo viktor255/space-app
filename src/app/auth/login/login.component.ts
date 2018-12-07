@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Login } from '../auth.actions';
+import { Login, ResendToken, ResetPasswordToken } from '../auth.actions';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../reducers';
 import { AuthData } from '../auth-data.model';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: './login.component.html',
@@ -12,7 +13,7 @@ import { AuthData } from '../auth-data.model';
 export class LoginComponent {
   isLoading = false;
 
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>, private router: Router) {
   }
 
   onLogin(form: NgForm) {
@@ -23,6 +24,27 @@ export class LoginComponent {
     };
 
     this.store.dispatch(new Login({authData: authData}));
+  }
+
+  onResendToken(form: NgForm) {
+    console.log(form.value);
+    const authData: AuthData = {
+      email: form.value.email,
+      password: 'dummy'
+    };
+
+    // this.store.dispatch(new ResendToken({authData: authData}));
+  }
+
+  onResetPassword(form: NgForm) {
+    console.log(form.value);
+    // this.router.navigateByUrl('/password-reset/dummyToken498q');
+    const authData: AuthData = {
+      email: form.value.email,
+      password: 'dummy'
+    };
+
+    this.store.dispatch(new ResetPasswordToken({authData: authData}));
   }
 
 

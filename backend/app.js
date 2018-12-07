@@ -7,7 +7,10 @@ const userRoutes = require('./routes/user');
 
 const app = express();
 
-mongoose.connect('mongodb+srv://space-app:gppg8SmyZDMr6fsn@space-eapuo.mongodb.net/space-app?retryWrites=true', {useNewUrlParser: true})
+mongoose.connect(
+  'mongodb+srv://space-app:' +
+  process.env.MONGO_ATLAS_PW +
+  '@space-eapuo.mongodb.net/space-app?retryWrites=true', {useNewUrlParser: true})
   .then(() => console.log('Connected to database.'))
   .catch(e => console.log('Connection failed', e));
 

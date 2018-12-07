@@ -18,10 +18,16 @@ router.post('', checkAuth, (req, res, next) => {
     maximumLoad: req.body.maximumLoad,
     foodBoxCapacity: req.body.foodBoxCapacity
   });
-  spacecraft.save();
-  res.status(201).json({
-    spacecraft: spacecraft
-  });
+  spacecraft.save().then(() => {
+    res.status(201).json({
+      spacecraft: spacecraft
+    })
+  })
+    .catch(err => {
+      res.status(500).json({
+        message: 'Spacecraft was not created'
+      });
+    });
 });
 
 router.put('/:id', checkAuth, (req, res, next) => {
@@ -37,26 +43,47 @@ router.put('/:id', checkAuth, (req, res, next) => {
     foodBoxCapacity: req.body.foodBoxCapacity
   });
   Spacecraft.updateOne({_id: req.params.id}, spacecraft).then(result => {
-    res.status(200).json({
-      spacecraft: spacecraft
-    });
+    if (result.n > 0) {
+      res.status(200).json({spacecraft: spacecraft});
+    } else {
+      res.status(401).json({message: 'Spacecraft does not exists'});
+    }
   })
+    .catch(err => {
+      res.status(500).json({
+        message: 'Couldn\'t update spacecraft!'
+      });
+    });
 });
 
 router.get('', checkAuth, (req, res, next) => {
   Spacecraft.find().then(spacecrafts => {
     res.status(200).json({
-      message: 'Spacecrats fetched succsesfully!',
+      message: 'Spacecrats fetched successfully!',
       spacecrafts: spacecrafts
     });
-  });
+  })
+    .catch(err => {
+      res.status(500).json({
+        message: 'Fetching spacecraft failed'
+      });
+    });
 });
 
 router.delete('/:id', checkAuth, (req, res, next) => {
   Spacecraft.deleteOne({_id: req.params.id})
     .then(result => {
-      res.status(200).json({_id: req.params.id});
+      if (result.n > 0) {
+        res.status(200).json({_id: req.params.id});
+      } else {
+        res.status(401).json({message: 'Spacecraft doesn\'t exists'});
+      }
     })
+    .catch(err => {
+      res.status(500).json({
+        message: 'Deleting spacecraft failed'
+      });
+    });
 });
 
 module.exports = router;
