@@ -33,7 +33,7 @@ export class LoginComponent {
       password: 'dummy'
     };
 
-    // this.store.dispatch(new ResendToken({authData: authData}));
+    this.store.dispatch(new ResendToken({authData: authData}));
   }
 
   onResetPassword(form: NgForm) {

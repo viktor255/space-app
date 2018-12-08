@@ -27,6 +27,9 @@ import { defer, of } from 'rxjs';
 import { AuthData } from './auth-data.model';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { ErrorComponent } from '../error/error.component';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { ConfirmationComponent } from '../confirmation/confirmation.component';
 
 const BACKEND_URL = environment.apiUrl + '/auth/';
 
@@ -35,7 +38,13 @@ const BACKEND_URL = environment.apiUrl + '/auth/';
 export class AuthEffects {
   private tokenTimer: any;
 
-  constructor(private actions$: Actions, private httpClient: HttpClient, private store: Store<AppState>, private router: Router) {
+  constructor(private actions$: Actions,
+              private httpClient: HttpClient,
+              private store: Store<AppState>,
+              private router: Router,
+              private dialog: MatDialog,
+              private snackBar: MatSnackBar
+  ) {
   }
 
   @Effect()
@@ -93,6 +102,16 @@ export class AuthEffects {
         )
       ),
     );
+  @Effect({dispatch: false})
+  signupSuccessful$ = this.actions$
+    .pipe(
+      ofType<SignupSuccessful>(AuthActionTypes.SignupActionSuccessful),
+      tap(() => {
+        const message = 'User created';
+        this.snackBar.openFromComponent(ConfirmationComponent, {data: {message: message, action: 'Okay'}, duration: 3000});
+        this.router.navigateByUrl('/login');
+      })
+    );
 
   @Effect()
   loginUser$ = this.actions$
@@ -117,13 +136,22 @@ export class AuthEffects {
       ofType<ResetPasswordToken>(AuthActionTypes.ResetPasswordTokenAction),
       switchMap((action) => this.resetPasswordToken(action.payload.authData)
         .pipe(
-          map(() => new ResetPasswordTokenSuccessful()),
+          map(() => new ResetPasswordTokenSuccessful({email: action.payload.authData.email})),
           catchError((error) => {
             this.store.dispatch(new ResetPasswordTokenError({error: error}));
             return of();
           })
         )
       ),
+    );
+  @Effect({dispatch: false})
+  resetPasswordTokenSuccessful$ = this.actions$
+    .pipe(
+      ofType<ResetPasswordTokenSuccessful>(AuthActionTypes.ResetPasswordTokenSuccessful),
+      tap((action) => {
+        const message = 'Email with instruction was send to: ' + action.payload.email;
+        this.snackBar.openFromComponent(ConfirmationComponent, {data: {message: message, action: 'Okay'}, duration: 3000});
+      })
     );
 
   @Effect()
@@ -140,6 +168,16 @@ export class AuthEffects {
         )
       ),
     );
+  @Effect({dispatch: false})
+  resetPasswordSuccessful$ = this.actions$
+    .pipe(
+      ofType<ResetPasswordSuccessful>(AuthActionTypes.ResetPasswordSuccessful),
+      tap(() => {
+        const message = 'Password was changed';
+        this.snackBar.openFromComponent(ConfirmationComponent, {data: {message: message, action: 'Okay'}, duration: 3000});
+        this.router.navigateByUrl('/login');
+      })
+    );
 
   @Effect()
   resendToken$ = this.actions$
@@ -147,13 +185,22 @@ export class AuthEffects {
       ofType<ResendToken>(AuthActionTypes.ResendTokenAction),
       switchMap((action) => this.resendToken(action.payload.authData)
         .pipe(
-          map(() => new ResendTokenSuccessful()),
+          map(() => new ResendTokenSuccessful({email: action.payload.authData.email})),
           catchError((error) => {
             this.store.dispatch(new ResendTokenError({error: error}));
             return of();
           })
         )
       ),
+    );
+  @Effect({dispatch: false})
+  resendTokenSuccessful$ = this.actions$
+    .pipe(
+      ofType<ResendTokenSuccessful>(AuthActionTypes.ResendTokenSuccessful),
+      tap((action) => {
+        const message = 'Authentication token was send to: ' + action.payload.email;
+        this.snackBar.openFromComponent(ConfirmationComponent, {data: {message: message, action: 'Okay'}, duration: 3000});
+      })
     );
 
   private setAuthTimer(duration: number) {

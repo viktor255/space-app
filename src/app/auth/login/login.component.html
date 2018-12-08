@@ -14,11 +14,11 @@
     </mat-form-field>
     </div>
     <div class="buttons">
-    <button mat-raised-button color="accent" type="submit" [disabled]="!loginForm.valid">Login</button>
+      <button mat-raised-button color="accent" type="submit" [disabled]="!loginForm.valid">Login</button>
 
-    <span class="spacer"></span>
-    <a><button mat-button color="basic" type="button"  [disabled]="emailInput.invalid" (click)="onResetPassword(loginForm)">Reset password</button></a>
-    <a><button mat-button color="basic" type="button" [disabled]="emailInput.invalid" (click)="onResendToken(loginForm)">Resend token</button></a>
+      <span class="spacer"></span>
+      <a><button mat-button color="basic" type="button"  [disabled]="emailInput.invalid" (click)="onResetPassword(loginForm)">Reset password</button></a>
+      <a><button mat-button color="basic" type="button" [disabled]="emailInput.invalid" (click)="onResendToken(loginForm)">Resend token</button></a>
     </div>
 
   </form>

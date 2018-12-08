@@ -5,7 +5,7 @@ import {
   MatExpansionModule, MatFormFieldModule,
   MatGridListModule,
   MatInputModule,
-  MatListModule, MatProgressSpinnerModule,
+  MatListModule, MatProgressSpinnerModule, MatSnackBarModule,
   MatToolbarModule
 } from '@angular/material';
 
@@ -20,6 +20,7 @@ import {
     MatToolbarModule,
     MatFormFieldModule,
     MatDialogModule,
+    MatSnackBarModule,
     MatProgressSpinnerModule
   ]
 })

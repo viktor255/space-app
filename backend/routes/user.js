@@ -189,7 +189,7 @@ router.post('/changePassword', (req, res, next) => {
 
       bcrypt.hash(req.body.password, 10)
         .then(hash => {
-          User.update({_id: token._userId}, {$set: {password: hash}})
+          User.updateOne({_id: token._userId}, {$set: {password: hash}})
             .then(response => {
               Token.deleteOne({_id: token._id}, function (err) {
               });
@@ -210,7 +210,7 @@ router.post('/sendResetPasswordToken', (req, res, next) => {
 
   User.findOne({email: req.body.email})
     .then(user => {
-      if (!user) return res.status(401).json({message: 'Invalid authentication credentials'});
+      if (!user) return res.status(401).json({message: 'User with given email doesn\'t exists'});
 
       // Create a verification token, save it, and send email
       const token = new Token({_userId: user._id, token: crypto.randomBytes(16).toString('hex')});
@@ -237,9 +237,10 @@ router.post('/sendResetPasswordToken', (req, res, next) => {
           from: 'no-reply@space-app.cz',
           to: user.email,
           subject: 'Space-app: Reset password verification token',
-          text: 'Hello,\n\n' + 'Please change your password on the link: \nhttp:\/\/'
-            + req.headers.host + '\/api\/auth\/password-reset\/' + token.token + '.\n'
+          text: 'Hello,\n\n' + 'Please change your password on the link: \n'
+            + req.headers.origin + '\/password-reset\/' + token.token + '.\n'
         };
+        console.log(mailOptions.text);
         transporter.sendMail(mailOptions, function (err) {
           if (err) {
             console.log('error message');

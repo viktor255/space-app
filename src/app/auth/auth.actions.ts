@@ -92,6 +92,8 @@ export class ResetPasswordToken implements Action {
 
 export class ResetPasswordTokenSuccessful implements Action {
   readonly type = AuthActionTypes.ResetPasswordTokenSuccessful;
+  constructor(public readonly payload: { email: string }) {
+  }
 }
 
 export class ResetPasswordTokenError implements Action {
@@ -110,6 +112,8 @@ export class ResendToken implements Action {
 
 export class ResendTokenSuccessful implements Action {
   readonly type = AuthActionTypes.ResendTokenSuccessful;
+  constructor(public readonly payload: { email: string }) {
+  }
 }
 
 export class ResendTokenError implements Action {
