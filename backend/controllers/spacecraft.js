@@ -1,13 +1,6 @@
-const express = require('express');
-
 const Spacecraft = require('../models/spacecraft');
 
-const checkAuth = require('../middleware/check-auth');
-
-const router = express.Router();
-
-
-router.post('', checkAuth, (req, res, next) => {
+exports.createSpacecraft = (req, res, next) => {
   const spacecraft = new Spacecraft({
     name: req.body.name,
     numberOfSeats: req.body.numberOfSeats,
@@ -28,9 +21,9 @@ router.post('', checkAuth, (req, res, next) => {
         message: 'Spacecraft was not created'
       });
     });
-});
+}
 
-router.put('/:id', checkAuth, (req, res, next) => {
+exports.updateSpacecraft = (req, res, next) => {
   const spacecraft = new Spacecraft({
     _id: req.body._id,
     name: req.body.name,
@@ -54,9 +47,9 @@ router.put('/:id', checkAuth, (req, res, next) => {
         message: 'Couldn\'t update spacecraft!'
       });
     });
-});
+}
 
-router.get('', checkAuth, (req, res, next) => {
+exports.getAllSpacecrafts = (req, res, next) => {
   Spacecraft.find().then(spacecrafts => {
     res.status(200).json({
       message: 'Spacecrats fetched successfully!',
@@ -68,9 +61,9 @@ router.get('', checkAuth, (req, res, next) => {
         message: 'Fetching spacecraft failed'
       });
     });
-});
+}
 
-router.delete('/:id', checkAuth, (req, res, next) => {
+exports.deleteSpacecraft = (req, res, next) => {
   Spacecraft.deleteOne({_id: req.params.id})
     .then(result => {
       if (result.n > 0) {
@@ -84,6 +77,4 @@ router.delete('/:id', checkAuth, (req, res, next) => {
         message: 'Deleting spacecraft failed'
       });
     });
-});
-
-module.exports = router;
+}

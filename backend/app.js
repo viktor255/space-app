@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const spacecraftsRoutes = require('./routes/spacecrafts');
+const spacecraftsRoutes = require('./routes/spacecraft');
 const userRoutes = require('./routes/user');
 
 const app = express();
