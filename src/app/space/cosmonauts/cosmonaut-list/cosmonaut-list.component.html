@@ -1,0 +1,8 @@
+<mat-card style="width: min-content">
+  <mat-card-title>Cosmonauts</mat-card-title>
+  <app-cosmonaut
+    [cosmonaut]="cosmonaut"
+    *ngFor="let cosmonaut of cosmonauts$ | async" >
+  </app-cosmonaut>
+
+</mat-card>

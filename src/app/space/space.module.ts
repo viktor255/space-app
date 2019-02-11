@@ -10,14 +10,22 @@ import { EffectsModule } from '@ngrx/effects';
 import { SpacecraftEffects } from './spacecrafts/spacecraft.effects';
 import { StoreModule } from '@ngrx/store';
 import { AngularMaterialModule } from '../angular-material.module';
-import { spacecraftReducer } from './reducers/spacecrafts.reducers';
+import { spacecraftReducer } from './reducers/spacecrafts.reducer';
 import { AppRoutingModule } from '../app-routing.module';
+import { CosmonautComponent } from './cosmonauts/cosmonaut/cosmonaut.component';
+import { CosmonautListComponent } from './cosmonauts/cosmonaut-list/cosmonaut-list.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { cosmonautReducer } from './reducers/cosmonauts.reducer';
+import { CosmonautEffects } from './cosmonauts/cosmonaut.effects';
 
 @NgModule({
   declarations: [
     SpacecraftComponent,
     SpacecraftCreateComponent,
-    SpacecraftListComponent
+    SpacecraftListComponent,
+    CosmonautComponent,
+    CosmonautListComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -27,11 +35,15 @@ import { AppRoutingModule } from '../app-routing.module';
     AngularMaterialModule,
     HttpClientModule,
     StoreModule.forFeature('spacecrafts', spacecraftReducer),
+    StoreModule.forFeature('cosmonauts', cosmonautReducer),
     EffectsModule.forFeature([SpacecraftEffects]),
+    EffectsModule.forFeature([CosmonautEffects]),
   ],
   exports: [
     SpacecraftListComponent,
-    SpacecraftCreateComponent
+    SpacecraftCreateComponent,
+    CosmonautListComponent,
+    DashboardComponent
   ]
 })
 export class SpaceModule {}

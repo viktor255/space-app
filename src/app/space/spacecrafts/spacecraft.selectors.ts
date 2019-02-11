@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
-import * as fromSpacecraft from '../reducers/spacecrafts.reducers';
+import * as fromSpacecraft from '../reducers/spacecrafts.reducer';
 
 export const selectSpacecraftState = createFeatureSelector<fromSpacecraft.SpacecraftState>('spacecraftsState');
 
