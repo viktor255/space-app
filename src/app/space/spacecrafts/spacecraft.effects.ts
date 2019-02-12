@@ -89,7 +89,7 @@ export class SpacecraftEffects {
 
 
   getSpacecrafts() {
-    return this.httpClient.get<{ message: string, spacecrafts: Spacecraft[] }>('http://localhost:3000/api/spacecrafts');
+    return this.httpClient.get<{ message: string, spacecrafts: Spacecraft[] }>(BACKEND_URL);
   }
 
   createSpacecraft(spacecraft: Spacecraft) {

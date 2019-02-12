@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const spacecraftsRoutes = require('./routes/spacecraft');
+const cosmonautsRoutes = require('./routes/cosmonaut');
 const userRoutes = require('./routes/user');
 
 const app = express();
@@ -30,6 +31,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/spacecrafts', spacecraftsRoutes);
+app.use('/api/cosmonauts', cosmonautsRoutes);
 app.use('/api/auth', userRoutes);
 
 module.exports = app;

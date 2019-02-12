@@ -3,6 +3,8 @@ import { select, Store } from '@ngrx/store';
 import { AppState } from '../../../reducers/index';
 import { Observable } from 'rxjs';
 import { Cosmonaut } from '../../models/cosmonaut.model';
+import { AllCosmonautsRequested } from '../cosmonaut.actions';
+import { selectAllCosmonauts } from '../cosmonaut.selectors';
 
 @Component({
   selector: 'app-cosmonaut-list',
@@ -17,8 +19,8 @@ export class CosmonautListComponent implements OnInit {
 
   ngOnInit() {
 
-    // this.store.dispatch(new AllCosmonautsRequested());
-    // this.cosmonauts$ = this.store.pipe(select(selectAllCosmonauts));
+    this.store.dispatch(new AllCosmonautsRequested());
+    this.cosmonauts$ = this.store.pipe(select(selectAllCosmonauts));
   }
 
 

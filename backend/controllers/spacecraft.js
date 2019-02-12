@@ -21,7 +21,7 @@ exports.createSpacecraft = (req, res, next) => {
         message: 'Spacecraft was not created'
       });
     });
-}
+};
 
 exports.updateSpacecraft = (req, res, next) => {
   const spacecraft = new Spacecraft({
@@ -47,7 +47,7 @@ exports.updateSpacecraft = (req, res, next) => {
         message: 'Couldn\'t update spacecraft!'
       });
     });
-}
+};
 
 exports.getAllSpacecrafts = (req, res, next) => {
   Spacecraft.find().then(spacecrafts => {
@@ -61,7 +61,7 @@ exports.getAllSpacecrafts = (req, res, next) => {
         message: 'Fetching spacecraft failed'
       });
     });
-}
+};
 
 exports.deleteSpacecraft = (req, res, next) => {
   Spacecraft.deleteOne({_id: req.params.id})
@@ -77,4 +77,4 @@ exports.deleteSpacecraft = (req, res, next) => {
         message: 'Deleting spacecraft failed'
       });
     });
-}
+};

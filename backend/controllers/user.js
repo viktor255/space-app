@@ -60,7 +60,7 @@ exports.createUser = (req, res, next) => {
           });
         })
     });
-}
+};
 
 exports.loginUser = (req, res, next) => {
   let fetchedUser;
@@ -97,7 +97,7 @@ exports.loginUser = (req, res, next) => {
     .catch(err => {
       return res.status(401).json({message: err.message});
     });
-}
+};
 
 exports.validateUser = (req, res, next) => {
 
@@ -127,7 +127,7 @@ exports.validateUser = (req, res, next) => {
     });
   });
 
-}
+};
 
 exports.resendValidationToken = (req, res, next) => {
 
@@ -176,7 +176,7 @@ exports.resendValidationToken = (req, res, next) => {
 
   });
 
-}
+};
 
 exports.changeUserPassword = (req, res, next) => {
 
@@ -201,7 +201,7 @@ exports.changeUserPassword = (req, res, next) => {
     .catch(err => {
       return res.status(401).json({message: err.message});
     });
-}
+};
 
 exports.sendResetPasswordToken = (req, res, next) => {
 
@@ -248,5 +248,5 @@ exports.sendResetPasswordToken = (req, res, next) => {
         res.status(200).json({message: 'Email with instructions send'})
       });
     });
-}
+};
 

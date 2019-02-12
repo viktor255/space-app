@@ -1,0 +1,61 @@
+<mat-card>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <h2 class="mat-h2">{{mode}} cosmonaut</h2>
+  <form (submit)="onSave(cosmonautForm)" class="example-form" #cosmonautForm="ngForm" *ngIf="!isLoading">
+    <mat-form-field class="example-full-width" *ngIf="mode == 'Create'">
+      <input
+        [ngModel]="defaultCosmonaut.email"
+        name="email"
+        matInput
+        type="email"
+        placeholder="Email"
+        required
+      >
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]="defaultCosmonaut.name"
+        name="name"
+        matInput
+        type="text"
+        placeholder="Name"
+        required>
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]=defaultCosmonaut.dateOfBirth
+        name="dateOfBirth"
+        matInput
+        type="date"
+        placeholder="Date of birth"
+        required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]=defaultCosmonaut.weight
+        name="weight"
+        matInput
+        type="number"
+        placeholder="Weight"
+        required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]=defaultCosmonaut.foodConsumption
+        name="foodConsumption"
+        matInput
+        type="number"
+        placeholder="Food consumption per 1 hour"
+        required>
+    </mat-form-field>
+
+    <button
+      type="submit"
+      mat-raised-button
+      color="primary"
+    >Save
+    </button>
+  </form>
+</mat-card>

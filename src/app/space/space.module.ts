@@ -17,6 +17,7 @@ import { CosmonautListComponent } from './cosmonauts/cosmonaut-list/cosmonaut-li
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { cosmonautReducer } from './reducers/cosmonauts.reducer';
 import { CosmonautEffects } from './cosmonauts/cosmonaut.effects';
+import { CosmonautCreateComponent } from './cosmonauts/cosmonaut-create/cosmonaut-create.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { CosmonautEffects } from './cosmonauts/cosmonaut.effects';
     SpacecraftListComponent,
     CosmonautComponent,
     CosmonautListComponent,
+    CosmonautCreateComponent,
     DashboardComponent
   ],
   imports: [
@@ -43,6 +45,7 @@ import { CosmonautEffects } from './cosmonauts/cosmonaut.effects';
     SpacecraftListComponent,
     SpacecraftCreateComponent,
     CosmonautListComponent,
+    CosmonautCreateComponent,
     DashboardComponent
   ]
 })

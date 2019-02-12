@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { Spacecraft } from '../../models/spacecraft.model';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../reducers';
 import { Cosmonaut } from '../../models/cosmonaut.model';
+import { Delete } from '../cosmonaut.actions';
 
 @Component({
   selector: 'app-cosmonaut',
@@ -17,9 +17,7 @@ export class CosmonautComponent {
   @Input() cosmonaut: Cosmonaut;
 
   onDelete() {
+    this.store.dispatch(new Delete({_id: this.cosmonaut._id}));
   }
 
-  onEdit() {
-
-  }
 }
