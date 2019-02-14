@@ -1,0 +1,58 @@
+<div id="mainDiv">
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{spaceflight.spacecraft.name}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-card class="mainCardTitle">
+
+        <mat-grid-list cols="2" rowHeight="7:3">
+          <mat-grid-tile>
+            <mat-card class="subCard">
+              <mat-card-subtitle>Spacecraft</mat-card-subtitle>
+              <mat-card-content>{{spaceflight?.spacecraft.name}}</mat-card-content>
+            </mat-card>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <mat-card class="subCard">
+              <mat-card-subtitle>Distance</mat-card-subtitle>
+              <mat-card-content>{{spaceflight?.distance}}</mat-card-content>
+            </mat-card>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <mat-card class="subCard">
+              <mat-card-subtitle>Start time</mat-card-subtitle>
+              <mat-card-content>{{spaceflight?.startTime}}</mat-card-content>
+            </mat-card>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <mat-card class="subCard">
+              <mat-card-subtitle>is Started</mat-card-subtitle>
+              <mat-card-content>{{spaceflight?.isStarted}}</mat-card-content>
+            </mat-card>
+          </mat-grid-tile>
+
+          <mat-grid-tile *ngFor="let cosmonaut of spaceflight?.cosmonauts">
+            <mat-card class="subCard">
+              <mat-card-subtitle>Cosmonaut</mat-card-subtitle>
+              <mat-card-content>{{cosmonaut.name}}</mat-card-content>
+            </mat-card>
+          </mat-grid-tile>
+
+        </mat-grid-list>
+
+      </mat-card>
+
+      <mat-action-row>
+        <button mat-raised-button color="basic" (click)="onDelete()">Delete</button>
+        <!--<a [routerLink]="['/edit-spaceflight/', spaceflight._id]"><button mat-raised-button color="primary">Update</button></a>-->
+      </mat-action-row>
+
+    </mat-expansion-panel>
+
+  </mat-accordion>
+</div>
+<br>

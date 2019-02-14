@@ -18,6 +18,11 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { cosmonautReducer } from './reducers/cosmonauts.reducer';
 import { CosmonautEffects } from './cosmonauts/cosmonaut.effects';
 import { CosmonautCreateComponent } from './cosmonauts/cosmonaut-create/cosmonaut-create.component';
+import { SpaceflightComponent } from './spaceflights/spaceflight/spaceflight.component';
+import { SpaceflightListComponent } from './spaceflights/spaceflight-list/spaceflight-list.component';
+import { spaceflightReducer } from './reducers/spaceflights.reducer';
+import { SpaceflightEffects } from './spaceflights/spaceflight.effects';
+import { SpaceflightCreateComponent } from './spaceflights/spaceflight-create/spaceflight-create.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +32,10 @@ import { CosmonautCreateComponent } from './cosmonauts/cosmonaut-create/cosmonau
     CosmonautComponent,
     CosmonautListComponent,
     CosmonautCreateComponent,
-    DashboardComponent
+    DashboardComponent,
+    SpaceflightComponent,
+    SpaceflightListComponent,
+    SpaceflightCreateComponent
   ],
   imports: [
     BrowserModule,
@@ -38,14 +46,18 @@ import { CosmonautCreateComponent } from './cosmonauts/cosmonaut-create/cosmonau
     HttpClientModule,
     StoreModule.forFeature('spacecrafts', spacecraftReducer),
     StoreModule.forFeature('cosmonauts', cosmonautReducer),
+    StoreModule.forFeature('spaceflights', spaceflightReducer),
     EffectsModule.forFeature([SpacecraftEffects]),
     EffectsModule.forFeature([CosmonautEffects]),
+    EffectsModule.forFeature([SpaceflightEffects]),
   ],
   exports: [
     SpacecraftListComponent,
     SpacecraftCreateComponent,
     CosmonautListComponent,
     CosmonautCreateComponent,
+    SpaceflightListComponent,
+    SpaceflightCreateComponent,
     DashboardComponent
   ]
 })

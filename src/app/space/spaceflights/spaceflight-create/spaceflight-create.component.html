@@ -1,0 +1,65 @@
+<mat-card>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <h2 class="mat-h2">{{mode}} spaceflight</h2>
+  <form (submit)="onSave(spaceflightForm)" class="example-form" #spaceflightForm="ngForm" *ngIf="!isLoading">
+
+    <<mat-form-field>
+    <mat-select
+      placeholder="Spacecraft"
+      [(ngModel)]="selectedValue"
+      name="spacecraft">
+      <mat-option *ngFor="let spacecraft of spacecrafts$ | async" [defaultSpaceflight.spacecraft]="spacecraft.name">
+        {{spacecraft.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]="defaultSpaceflight.distance"
+        name="distance"
+        matInput
+        type="text"
+        placeholder="Distance"
+        required>
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]=defaultSpaceflight.startTime
+        name="startTime"
+        matInput
+        type="number"
+        placeholder="Start time"
+        required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]=defaultSpaceflight.spacecraft
+        name="spacecraft"
+        matInput
+        type="number"
+        placeholder="Spacecraft"
+        required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input
+        [ngModel]=defaultSpaceflight.cosmonauts
+        name="cosmonauts"
+        matInput
+        type="number"
+        placeholder="Cosmonauts"
+        required>
+    </mat-form-field>
+
+
+    <button
+      type="submit"
+      mat-raised-button
+      color="primary"
+    >Save
+    </button>
+  </form>
+</mat-card>
