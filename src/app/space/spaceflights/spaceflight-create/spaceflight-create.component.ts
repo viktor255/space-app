@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../../../reducers';
@@ -11,6 +11,8 @@ import { Spacecraft } from '../../models/spacecraft.model';
 import { Cosmonaut } from '../../models/cosmonaut.model';
 import { AllSpacecraftsRequested } from '../../spacecrafts/spacecraft.actions';
 import { selectAllSpacecrafts } from '../../spacecrafts/spacecraft.selectors';
+import { AllCosmonautsRequested } from '../../cosmonauts/cosmonaut.actions';
+import { selectAllCosmonauts } from '../../cosmonauts/cosmonaut.selectors';
 
 @Component({
   selector: 'app-spaceflight-create',
@@ -25,7 +27,11 @@ export class SpaceflightCreateComponent implements OnInit {
   public isLoading = true;
 
   spacecrafts$: Observable<Spacecraft[]>;
-  selectedValue: string;
+  cosmonauts$: Observable<Cosmonaut[]>;
+
+  public arriveTime: number;
+  public startDate: string;
+
 
   constructor(private store: Store<AppState>, public route: ActivatedRoute, private router: Router) {
   }
@@ -48,12 +54,13 @@ export class SpaceflightCreateComponent implements OnInit {
         } else {
           this.defaultSpaceflight = {
             _id: 'dummy',
-            distance: 350504,
+            distance: 384400,
             startTime: Date.now(),
             isStarted: false,
             spacecraft: undefined,
             cosmonauts: []
           };
+          this.startDate = '1975-02-20';
           this.isLoading = false;
           this.spaceflightId = null;
           this.mode = 'Create';
@@ -62,27 +69,43 @@ export class SpaceflightCreateComponent implements OnInit {
     );
     this.store.dispatch(new AllSpacecraftsRequested());
     this.spacecrafts$ = this.store.pipe(select(selectAllSpacecrafts));
+    this.store.dispatch(new AllCosmonautsRequested());
+    this.cosmonauts$ = this.store.pipe(select(selectAllCosmonauts));
+
+
   }
+
+  onSelectChange() {
+    this.defaultSpaceflight.startTime = new Date(this.startDate).valueOf();
+    console.log('On select change activated');
+    console.log('Start date from input: ' + this.startDate);
+    // console.log('This is before epocha' + this.defaultSpaceflight.startTime);
+    this.arriveTime = this.defaultSpaceflight.startTime.valueOf()
+      + (this.defaultSpaceflight.distance / this.defaultSpaceflight.spacecraft.speed) * 60 * 60 * 1000;
+  }
+
 
   onSave(form: NgForm) {
     if (form.invalid) {
       return;
     }
-    this.defaultSpaceflight = {
-      _id: this.spaceflightId,
-      distance: form.value.distance,
-      startTime: form.value.startTime,
-      isStarted: false,
-      spacecraft: undefined,
-      cosmonauts: []
-    };
+    // this.defaultSpaceflight = {
+    //   _id: this.spaceflightId,
+    //   distance: form.value.distance,
+    //   startTime: form.value.startTime,
+    //   isStarted: false,
+    //   spacecraft: undefined,
+    //   cosmonauts: []
+    // };
     if (this.mode === 'Create') {
+      // console.log(this.defaultSpaceflight);
       // this.store.dispatch(new Create({spaceflight: this.defaultSpaceflight}));
     } else {
       // this.store.dispatch(new Update({spaceflight: this.defaultSpaceflight}));
     }
 
     console.log(this.defaultSpaceflight);
-    this.router.navigateByUrl('/');
+
+    // this.router.navigateByUrl('/');
   }
 }
