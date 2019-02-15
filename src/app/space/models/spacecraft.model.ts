@@ -8,4 +8,5 @@ export interface Spacecraft {
   speed: number;
   maximumLoad: number;
   foodBoxCapacity: number;
+  food: number;
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Spacecraft } from '../../models/spacecraft.model';
 import { select, Store } from '@ngrx/store';
-import { AppState } from '../../../reducers/index';
+import { AppState } from '../../../reducers';
 import { Observable } from 'rxjs';
 import { AllSpacecraftsRequested } from '../spacecraft.actions';
 import { selectAllSpacecrafts } from '../spacecraft.selectors';

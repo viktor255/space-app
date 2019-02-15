@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Spacecraft } from '../../models/spacecraft.model';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../../reducers/index';
+import { AppState } from '../../../reducers';
 import { Delete } from '../spacecraft.actions';
 
 @Component({

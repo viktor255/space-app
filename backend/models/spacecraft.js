@@ -9,6 +9,7 @@ const spacecraftSchema = mongoose.Schema({
   speed: {type: Number, required: true},
   maximumLoad: {type: Number, required: true},
   foodBoxCapacity: {type: Number, required: true},
+  food: {type: Number, required: true},
 });
 
 module.exports = mongoose.model('Spacecraft', spacecraftSchema);

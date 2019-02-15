@@ -48,7 +48,8 @@ export class SpacecraftCreateComponent implements OnInit {
             fuelConsumption: 5,
             speed: 1,
             maximumLoad: 1000,
-            foodBoxCapacity: 200
+            foodBoxCapacity: 200,
+            food: 0
           };
           this.isLoading = false;
           this.spacecraftId = null;
@@ -71,7 +72,8 @@ export class SpacecraftCreateComponent implements OnInit {
       fuelConsumption: form.value.fuelConsumption,
       speed: form.value.speed,
       maximumLoad: form.value.maximumLoad,
-      foodBoxCapacity: form.value.foodBoxCapacity
+      foodBoxCapacity: form.value.foodBoxCapacity,
+      food: 0
     };
     if (this.mode === 'Create') {
       this.store.dispatch(new Create({spacecraft: this.defaultSpacecraft}));

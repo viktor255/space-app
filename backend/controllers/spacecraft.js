@@ -9,7 +9,8 @@ exports.createSpacecraft = (req, res, next) => {
     fuelConsumption: req.body.fuelConsumption,
     speed: req.body.speed,
     maximumLoad: req.body.maximumLoad,
-    foodBoxCapacity: req.body.foodBoxCapacity
+    foodBoxCapacity: req.body.foodBoxCapacity,
+    food: req.body.food
   });
   spacecraft.save().then(() => {
     res.status(201).json({
@@ -33,7 +34,8 @@ exports.updateSpacecraft = (req, res, next) => {
     fuelConsumption: req.body.fuelConsumption,
     speed: req.body.speed,
     maximumLoad: req.body.maximumLoad,
-    foodBoxCapacity: req.body.foodBoxCapacity
+    foodBoxCapacity: req.body.foodBoxCapacity,
+    food: req.body.food
   });
   Spacecraft.updateOne({_id: req.params.id}, spacecraft).then(result => {
     if (result.n > 0) {
