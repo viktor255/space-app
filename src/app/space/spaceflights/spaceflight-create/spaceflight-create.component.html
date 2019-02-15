@@ -51,6 +51,33 @@
     </mat-form-field>
     <p>ETA {{arriveTime | date: 'dd. MM. yyyy'}}</p>
 
+    <mat-form-field class="example-full-width" *ngIf="defaultSpaceflight.spacecraft">
+      <input
+        [ngModel]="defaultSpaceflight.spacecraft.fuel"
+        (ngModelChange)="fuel=$event"
+        name="fuel"
+        matInput
+        type="number"
+        min="0"
+        max="100"
+        placeholder="Fuel"
+        required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" *ngIf="defaultSpaceflight.spacecraft">
+      <input
+        [ngModel]="defaultSpaceflight.spacecraft.food"
+        (ngModelChange)="food=$event"
+        name="food"
+        matInput
+        type="number"
+        min="0"
+        max="100"
+        placeholder="Food"
+        required>
+    </mat-form-field>
+    <p *ngIf="defaultSpaceflight.spacecraft">Food is {{food}}</p>
+
 
     <button
       type="submit"

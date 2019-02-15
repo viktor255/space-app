@@ -27,7 +27,9 @@ export class SpaceflightEffects {
       filter(([action, allSpaceflightsLoadedBool]) => !allSpaceflightsLoadedBool),
       mergeMap((action) => this.getSpaceflights()
         .pipe(
-          map(spaceflightObject => new AllSpaceflightsLoaded({spaceflights: spaceflightObject.spaceflights})),
+          map(spaceflightObject => {
+            return new AllSpaceflightsLoaded({spaceflights: spaceflightObject.spaceflights});
+          }),
           catchError((error) => {
             this.store.dispatch(new BackendError({error: error}));
             return of();

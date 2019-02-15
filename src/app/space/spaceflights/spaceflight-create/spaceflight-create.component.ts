@@ -14,6 +14,8 @@ import { selectAllSpacecrafts } from '../../spacecrafts/spacecraft.selectors';
 import { AllCosmonautsRequested } from '../../cosmonauts/cosmonaut.actions';
 import { selectAllCosmonauts } from '../../cosmonauts/cosmonaut.selectors';
 
+import * as SpaceCraftActions from '../../spacecrafts/spacecraft.actions';
+
 @Component({
   selector: 'app-spaceflight-create',
   templateUrl: './spaceflight-create.component.html',
@@ -31,7 +33,8 @@ export class SpaceflightCreateComponent implements OnInit {
 
   public arriveTime: number;
   public startDate: string;
-
+  public food: number;
+  public fuel: number;
 
   constructor(private store: Store<AppState>, public route: ActivatedRoute, private router: Router) {
   }
@@ -84,6 +87,30 @@ export class SpaceflightCreateComponent implements OnInit {
       + (this.defaultSpaceflight.distance / this.defaultSpaceflight.spacecraft.speed) * 60 * 60 * 1000;
   }
 
+  onSpacecraftChange() {
+
+    console.log('onSpacecraftChange method invoked');
+    console.log(this.defaultSpaceflight.spacecraft.food);
+    console.log(this.defaultSpaceflight.spacecraft);
+
+  }
+
+  changeFoodAndFuel() {
+    this.defaultSpaceflight.spacecraft = {
+      _id: this.defaultSpaceflight.spacecraft._id,
+      name: this.defaultSpaceflight.spacecraft.name,
+      numberOfSeats: this.defaultSpaceflight.spacecraft.numberOfSeats,
+      fuelTankCapacity: this.defaultSpaceflight.spacecraft.fuelTankCapacity,
+      fuel: this.fuel,
+      fuelConsumption: this.defaultSpaceflight.spacecraft.fuelConsumption,
+      speed: this.defaultSpaceflight.spacecraft.speed,
+      maximumLoad: this.defaultSpaceflight.spacecraft.maximumLoad,
+      foodBoxCapacity: this.defaultSpaceflight.spacecraft.foodBoxCapacity,
+      food: this.food
+    };
+    this.store.dispatch(new SpaceCraftActions.Update({spacecraft: this.defaultSpaceflight.spacecraft}));
+  }
+
 
   onSave(form: NgForm) {
     if (form.invalid) {
@@ -97,13 +124,18 @@ export class SpaceflightCreateComponent implements OnInit {
     //   spacecraft: undefined,
     //   cosmonauts: []
     // };
+
+
     if (this.mode === 'Create') {
       // console.log(this.defaultSpaceflight);
       // this.store.dispatch(new Create({spaceflight: this.defaultSpaceflight}));
+      this.changeFoodAndFuel();
+
     } else {
       // this.store.dispatch(new Update({spaceflight: this.defaultSpaceflight}));
     }
 
+    // this.defaultSpaceflight.spacecraft.food = form.value.food;
     console.log(this.defaultSpaceflight);
 
     // this.router.navigateByUrl('/');
