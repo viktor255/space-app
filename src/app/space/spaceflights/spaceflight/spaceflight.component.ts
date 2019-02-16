@@ -22,15 +22,10 @@ export class SpaceflightComponent implements OnInit {
 
   ngOnInit() {
     this.spacecraft$ = this.store.pipe(select(selectSpacecraftById(this.spaceflight.spacecraftId)));
-    // this.spaceflight.cosmonautsIds.map()
-    // console.log(this.spaceflight.cosmonautsIds);
-    // console.log(this.spaceflight.spacecraftId);
-    this.spaceflight.cosmonautsIds.map((cosmonaut, cosmonautIndex) => {
-      this.cosmonauts$.push(this.store.pipe(select(selectCosmonautById(cosmonaut[cosmonautIndex]))));
-      console.log('cosmonauts$ length: ' + this.cosmonauts$.length);
-      // console.log(cosmonaut);
-      console.log('cosmonaut index: ' + cosmonautIndex);
+    this.spaceflight.cosmonautsIds.forEach((cosmonaut) => {
+      this.cosmonauts$.push(this.store.pipe(select(selectCosmonautById(cosmonaut))));
     });
+    // this.store.pipe(select(selectCosmonautsByIds()))
 
   }
 
