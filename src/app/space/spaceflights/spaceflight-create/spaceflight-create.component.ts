@@ -60,8 +60,8 @@ export class SpaceflightCreateComponent implements OnInit {
             distance: 384400,
             startTime: Date.now(),
             isStarted: false,
-            spacecraft: undefined,
-            cosmonauts: []
+            spacecraftId: undefined,
+            cosmonautsIds: []
           };
           this.startDate = '1975-02-20';
           this.isLoading = false;
@@ -83,32 +83,31 @@ export class SpaceflightCreateComponent implements OnInit {
     console.log('On select change activated');
     console.log('Start date from input: ' + this.startDate);
     // console.log('This is before epocha' + this.defaultSpaceflight.startTime);
-    this.arriveTime = this.defaultSpaceflight.startTime.valueOf()
-      + (this.defaultSpaceflight.distance / this.defaultSpaceflight.spacecraft.speed) * 60 * 60 * 1000;
+    // this.arriveTime = this.defaultSpaceflight.startTime.valueOf()
+    //   + (this.defaultSpaceflight.distance / this.defaultSpaceflight.spacecraftId.speed) * 60 * 60 * 1000;
   }
 
   onSpacecraftChange() {
 
     console.log('onSpacecraftChange method invoked');
-    console.log(this.defaultSpaceflight.spacecraft.food);
-    console.log(this.defaultSpaceflight.spacecraft);
-
+    // console.log(this.defaultSpaceflight.spacecraftId.food);
+    // console.log(this.defaultSpaceflight.spacecraftId);
   }
 
   changeFoodAndFuel() {
-    this.defaultSpaceflight.spacecraft = {
-      _id: this.defaultSpaceflight.spacecraft._id,
-      name: this.defaultSpaceflight.spacecraft.name,
-      numberOfSeats: this.defaultSpaceflight.spacecraft.numberOfSeats,
-      fuelTankCapacity: this.defaultSpaceflight.spacecraft.fuelTankCapacity,
-      fuel: this.fuel,
-      fuelConsumption: this.defaultSpaceflight.spacecraft.fuelConsumption,
-      speed: this.defaultSpaceflight.spacecraft.speed,
-      maximumLoad: this.defaultSpaceflight.spacecraft.maximumLoad,
-      foodBoxCapacity: this.defaultSpaceflight.spacecraft.foodBoxCapacity,
-      food: this.food
-    };
-    this.store.dispatch(new SpaceCraftActions.Update({spacecraft: this.defaultSpaceflight.spacecraft}));
+    // this.defaultSpaceflight.spacecraft = {
+    //   _id: this.defaultSpaceflight.spacecraft._id,
+    //   name: this.defaultSpaceflight.spacecraft.name,
+    //   numberOfSeats: this.defaultSpaceflight.spacecraft.numberOfSeats,
+    //   fuelTankCapacity: this.defaultSpaceflight.spacecraft.fuelTankCapacity,
+    //   fuel: this.fuel,
+    //   fuelConsumption: this.defaultSpaceflight.spacecraft.fuelConsumption,
+    //   speed: this.defaultSpaceflight.spacecraft.speed,
+    //   maximumLoad: this.defaultSpaceflight.spacecraft.maximumLoad,
+    //   foodBoxCapacity: this.defaultSpaceflight.spacecraft.foodBoxCapacity,
+    //   food: this.food
+    // };
+    // this.store.dispatch(new SpaceCraftActions.Update({spacecraft: this.defaultSpaceflight.spacecraft}));
   }
 
 

@@ -1,9 +1,9 @@
-<div id="mainDiv">
+<div id="mainDiv" *ngIf="spacecraft$ | async as spacecraft">
   <mat-accordion>
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
-          {{spaceflight.spacecraft.name}}
+          {{spacecraft.name}}
         </mat-panel-title>
       </mat-expansion-panel-header>
 
@@ -13,7 +13,7 @@
           <mat-grid-tile>
             <mat-card class="subCard">
               <mat-card-subtitle>Spacecraft</mat-card-subtitle>
-              <mat-card-content>{{spaceflight?.spacecraft}}</mat-card-content>
+              <mat-card-content>{{spacecraft.name}}</mat-card-content>
             </mat-card>
           </mat-grid-tile>
           <mat-grid-tile>
@@ -35,10 +35,10 @@
             </mat-card>
           </mat-grid-tile>
 
-          <mat-grid-tile *ngFor="let cosmonaut of spaceflight?.cosmonauts">
-            <mat-card class="subCard">
+          <mat-grid-tile *ngFor="let cosmonaut$ of cosmonauts$">
+            <mat-card class="subCard" *ngIf="cosmonaut$ | async as cosmonaut">
               <mat-card-subtitle>Cosmonaut</mat-card-subtitle>
-              <mat-card-content>{{cosmonaut.name}}</mat-card-content>
+              <mat-card-content>{{cosmonaut}}</mat-card-content>
             </mat-card>
           </mat-grid-tile>
 
