@@ -15,6 +15,7 @@ import { AllCosmonautsRequested } from '../../cosmonauts/cosmonaut.actions';
 import { selectAllCosmonauts } from '../../cosmonauts/cosmonaut.selectors';
 
 import * as SpaceCraftActions from '../../spacecrafts/spacecraft.actions';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-spaceflight-create',
@@ -154,6 +155,46 @@ export class SpaceflightCreateComponent implements OnInit {
     console.log('Fuel needed for this flight is: ' + fuelNeeded);
   }
 
+  getAge(dateString) {
+    const today = new Date();
+    const birthDate = new Date(dateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
+
+  calculateFood() {
+    const currentFood = (this.food / 100) * this.selectedSpacecraft.foodBoxCapacity;
+    const travelTimeMs = this.arriveTime - this.spaceflight.startTime;
+    const travelTimeHours = travelTimeMs / (1000 * 60 * 60);
+    let foodNeeded = 0;
+    let foodNeededHungry = 0;
+    this.selectedCosmonauts.forEach(cosmonaut => {
+      foodNeeded += cosmonaut.foodConsumption * travelTimeHours;
+      const ageOfCosmonaut = this.getAge(cosmonaut.dateOfBirth);
+      if (ageOfCosmonaut <= 40 && ageOfCosmonaut >= 20) {
+        foodNeededHungry += cosmonaut.foodConsumption * travelTimeHours * 0.7;
+      } else {
+        foodNeededHungry += cosmonaut.foodConsumption * travelTimeHours;
+      }
+      console.log('Age of cosmonaut ' + cosmonaut.name + ' is: ' + this.getAge(cosmonaut.dateOfBirth));
+
+    });
+    if (currentFood < foodNeeded && currentFood > foodNeededHungry) {
+      console.log('Young cosmonauts will starve for max 30% of time');
+    }
+    if (currentFood < foodNeededHungry) {
+      console.log('Spacecraft has not enough food');
+    }
+    console.log('Current food is: ' + currentFood);
+    console.log('Food needed for this flight without starvation is: ' + foodNeeded);
+    console.log('Food needed for this flight with starvation is: ' + foodNeededHungry);
+
+  }
+
 
   onSave(form: NgForm) {
     if (form.invalid) {
@@ -176,6 +217,7 @@ export class SpaceflightCreateComponent implements OnInit {
       this.saveCosmonauts();
       this.currentWeightCalculation();
       this.calculateFuel();
+      this.calculateFood();
 
     } else {
       // this.store.dispatch(new Update({spaceflight: this.spaceflight}));

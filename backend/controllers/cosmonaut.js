@@ -106,7 +106,7 @@ exports.createCosmonaut = (req, res, next) => {
 };
 
 exports.updateCosmonaut = (req, res, next) => {
-  Cosmonaut.updateOne({_id: req.params.id}, {name: req.body.name, weight: req.body.weight, foodConsumption: req.body.foodConsumption})
+  Cosmonaut.updateOne({_id: req.params.id}, {name: req.body.name, dateOfBirth: req.body.dateOfBirth, weight: req.body.weight, foodConsumption: req.body.foodConsumption})
     .then(result => {
     if (result.n > 0) {
       res.status(200).json({message: 'Cosmonaut updated successfully'});
