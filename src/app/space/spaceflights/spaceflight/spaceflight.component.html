@@ -35,12 +35,14 @@
             </mat-card>
           </mat-grid-tile>
 
-          <mat-grid-tile *ngFor="let cosmonaut$ of cosmonauts$">
-            <mat-card class="subCard" *ngIf="cosmonaut$ | async as cosmonaut">
-              <mat-card-subtitle>Cosmonaut</mat-card-subtitle>
-              <mat-card-content>{{cosmonaut.name}}</mat-card-content>
-            </mat-card>
-          </mat-grid-tile>
+          <div *ngIf="cosmonauts$ | async as cosmonauts">
+            <mat-grid-tile *ngFor="let cosmonaut of cosmonauts">
+              <mat-card class="subCard" >
+                <mat-card-subtitle>Cosmonaut</mat-card-subtitle>
+                <mat-card-content>{{cosmonaut.name}}</mat-card-content>
+              </mat-card>
+            </mat-grid-tile>
+          </div>
 
         </mat-grid-list>
 

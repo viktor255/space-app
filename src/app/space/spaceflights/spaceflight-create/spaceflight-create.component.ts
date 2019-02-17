@@ -25,7 +25,7 @@ export class SpaceflightCreateComponent implements OnInit {
   public mode = 'Create';
   private spaceflightId: string;
   private spaceflightToEdit$: Observable<Spaceflight>;
-  public defaultSpaceflight: Spaceflight;
+  public spaceflight: Spaceflight;
   public isLoading = true;
 
   spacecrafts$: Observable<Spacecraft[]>;
@@ -35,6 +35,9 @@ export class SpaceflightCreateComponent implements OnInit {
   public startDate: string;
   public food: number;
   public fuel: number;
+  public selectedSpacecraft: Spacecraft;
+  public selectedCosmonauts: Cosmonaut[];
+  public currentWeight = 0;
 
   constructor(private store: Store<AppState>, public route: ActivatedRoute, private router: Router) {
   }
@@ -48,14 +51,14 @@ export class SpaceflightCreateComponent implements OnInit {
           this.spaceflightId = paramMap.get('spaceflightId');
           this.spaceflightToEdit$ = this.store.pipe(select(selectSpaceflightById(this.spaceflightId)));
           this.spaceflightToEdit$.subscribe(spaceflight => {
-            this.defaultSpaceflight = spaceflight;
+            this.spaceflight = spaceflight;
             if (spaceflight !== undefined) {
               this.isLoading = false;
             }
           });
 
         } else {
-          this.defaultSpaceflight = {
+          this.spaceflight = {
             _id: 'dummy',
             distance: 384400,
             startTime: Date.now(),
@@ -79,35 +82,76 @@ export class SpaceflightCreateComponent implements OnInit {
   }
 
   onSelectChange() {
-    this.defaultSpaceflight.startTime = new Date(this.startDate).valueOf();
+    this.spaceflight.spacecraftId = this.selectedSpacecraft._id;
+    this.spaceflight.startTime = new Date(this.startDate).valueOf();
     console.log('On select change activated');
     console.log('Start date from input: ' + this.startDate);
-    // console.log('This is before epocha' + this.defaultSpaceflight.startTime);
-    // this.arriveTime = this.defaultSpaceflight.startTime.valueOf()
-    //   + (this.defaultSpaceflight.distance / this.defaultSpaceflight.spacecraftId.speed) * 60 * 60 * 1000;
+    // console.log('This is before epocha' + this.spaceflight.startTime);
+    this.arriveTime = this.spaceflight.startTime.valueOf()
+      + (this.spaceflight.distance / this.selectedSpacecraft.speed) * 60 * 60 * 1000;
   }
 
   onSpacecraftChange() {
 
     console.log('onSpacecraftChange method invoked');
-    // console.log(this.defaultSpaceflight.spacecraftId.food);
-    // console.log(this.defaultSpaceflight.spacecraftId);
+    // console.log(this.spaceflight.spacecraftId.food);
+    // console.log(this.spaceflight.spacecraftId);
+  }
+
+  saveCosmonauts() {
+    this.selectedCosmonauts.forEach(cosmonaut => {
+      if (!this.spaceflight.cosmonautsIds.includes(cosmonaut._id)) {
+        this.spaceflight.cosmonautsIds.push(cosmonaut._id);
+      }
+    });
   }
 
   changeFoodAndFuel() {
-    // this.defaultSpaceflight.spacecraft = {
-    //   _id: this.defaultSpaceflight.spacecraft._id,
-    //   name: this.defaultSpaceflight.spacecraft.name,
-    //   numberOfSeats: this.defaultSpaceflight.spacecraft.numberOfSeats,
-    //   fuelTankCapacity: this.defaultSpaceflight.spacecraft.fuelTankCapacity,
-    //   fuel: this.fuel,
-    //   fuelConsumption: this.defaultSpaceflight.spacecraft.fuelConsumption,
-    //   speed: this.defaultSpaceflight.spacecraft.speed,
-    //   maximumLoad: this.defaultSpaceflight.spacecraft.maximumLoad,
-    //   foodBoxCapacity: this.defaultSpaceflight.spacecraft.foodBoxCapacity,
-    //   food: this.food
-    // };
-    // this.store.dispatch(new SpaceCraftActions.Update({spacecraft: this.defaultSpaceflight.spacecraft}));
+    if (!this.food) {
+      this.food = this.selectedSpacecraft.food;
+    }
+    if (!this.fuel) {
+      this.fuel = this.selectedSpacecraft.fuel;
+    }
+    this.selectedSpacecraft = {
+      _id: this.selectedSpacecraft._id,
+      name: this.selectedSpacecraft.name,
+      numberOfSeats: this.selectedSpacecraft.numberOfSeats,
+      fuelTankCapacity: this.selectedSpacecraft.fuelTankCapacity,
+      fuel: this.fuel,
+      fuelConsumption: this.selectedSpacecraft.fuelConsumption,
+      speed: this.selectedSpacecraft.speed,
+      maximumLoad: this.selectedSpacecraft.maximumLoad,
+      foodBoxCapacity: this.selectedSpacecraft.foodBoxCapacity,
+      food: this.food
+    };
+    this.store.dispatch(new SpaceCraftActions.Update({spacecraft: this.selectedSpacecraft}));
+  }
+
+  currentWeightCalculation() {
+    this.currentWeight = 0;
+    this.selectedCosmonauts.forEach(cosmonaut => {
+      this.currentWeight += cosmonaut.weight;
+    });
+    this.currentWeight += this.selectedSpacecraft.foodBoxCapacity * (this.food / 100);
+    if (this.currentWeight >= this.selectedSpacecraft.maximumLoad) {
+      console.log('Spacecraft is overloaded');
+    }
+    console.log('Current weight is: ' + this.currentWeight);
+    console.log('Maximum load is: ' + this.selectedSpacecraft.maximumLoad);
+  }
+
+  calculateFuel() {
+    const currentFuel = (this.fuel / 100) * this.selectedSpacecraft.fuelTankCapacity;
+    const travelTimeMs = this.arriveTime - this.spaceflight.startTime;
+    const travelTimeHours = travelTimeMs / (1000 * 60 * 60);
+    const fuelNeeded = travelTimeHours * this.selectedSpacecraft.fuelConsumption;
+
+    if (currentFuel < fuelNeeded) {
+      console.log('Spacecraft has not enough fuel');
+    }
+    console.log('Current fuel is: ' + currentFuel);
+    console.log('Fuel needed for this flight is: ' + fuelNeeded);
   }
 
 
@@ -115,7 +159,7 @@ export class SpaceflightCreateComponent implements OnInit {
     if (form.invalid) {
       return;
     }
-    // this.defaultSpaceflight = {
+    // this.spaceflight = {
     //   _id: this.spaceflightId,
     //   distance: form.value.distance,
     //   startTime: form.value.startTime,
@@ -126,16 +170,19 @@ export class SpaceflightCreateComponent implements OnInit {
 
 
     if (this.mode === 'Create') {
-      // console.log(this.defaultSpaceflight);
-      // this.store.dispatch(new Create({spaceflight: this.defaultSpaceflight}));
+      // console.log(this.spaceflight);
+      // this.store.dispatch(new Create({spaceflight: this.spaceflight}));
       this.changeFoodAndFuel();
+      this.saveCosmonauts();
+      this.currentWeightCalculation();
+      this.calculateFuel();
 
     } else {
-      // this.store.dispatch(new Update({spaceflight: this.defaultSpaceflight}));
+      // this.store.dispatch(new Update({spaceflight: this.spaceflight}));
     }
 
-    // this.defaultSpaceflight.spacecraft.food = form.value.food;
-    console.log(this.defaultSpaceflight);
+    // this.spaceflight.spacecraft.food = form.value.food;
+    console.log(this.spaceflight);
 
     // this.router.navigateByUrl('/');
   }

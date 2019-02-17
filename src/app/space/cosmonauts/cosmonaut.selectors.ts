@@ -1,6 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 import * as fromCosmonaut from '../reducers/cosmonauts.reducer';
+import { Cosmonaut } from '../models/cosmonaut.model';
 
 export const selectCosmonautState = createFeatureSelector<fromCosmonaut.CosmonautState>('cosmonautsState');
 
@@ -17,4 +18,9 @@ export const selectAllCosmonauts = createSelector(
 export const allCosmonautsLoaded = createSelector(
   selectCosmonautState,
   cosmonautState => cosmonautState.allCosmonautsLoaded
+);
+
+export const selectCosmonautsByIds = (cosmonautsIds: string[]) => createSelector(
+  selectAllCosmonauts,
+  allCosmonauts => allCosmonauts.filter((cosmonaut: Cosmonaut) => cosmonautsIds.includes(cosmonaut._id))
 );

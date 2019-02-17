@@ -3,34 +3,34 @@
   <h2 class="mat-h2">{{mode}} spaceflight</h2>
   <form (submit)="onSave(spaceflightForm)" class="example-form" #spaceflightForm="ngForm" *ngIf="!isLoading">
 
-    <!--<mat-form-field>-->
-      <!--<mat-select-->
-        <!--placeholder="Spacecraft"-->
-        <!--[(ngModel)]="defaultSpaceflight.spacecraft"-->
-        <!--(selectionChange)="onSelectChange()"-->
-        <!--name="spacecraft">-->
-        <!--<mat-option *ngFor="let spacecraft of spacecrafts$ | async" [value]="spacecraft">-->
-          <!--{{spacecraft.name}}-->
-        <!--</mat-option>-->
-      <!--</mat-select>-->
-    <!--</mat-form-field>-->
+    <mat-form-field>
+      <mat-select
+        placeholder="Spacecraft"
+        [(ngModel)]="selectedSpacecraft"
+        (selectionChange)="onSelectChange()"
+        name="spacecraft">
+        <mat-option *ngFor="let spacecraft of spacecrafts$ | async" [value]="spacecraft">
+          {{spacecraft.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-    <!--<mat-form-field>-->
-      <!--<mat-select-->
-        <!--placeholder="Cosmonauts"-->
-        <!--[(ngModel)]="defaultSpaceflight.cosmonauts"-->
-        <!--name="cosmonauts"-->
-        <!--multiple>-->
-        <!--<mat-option *ngFor="let cosmonaut of cosmonauts$ | async" [value]="cosmonaut">-->
-          <!--{{cosmonaut.name}}-->
-        <!--</mat-option>-->
-      <!--</mat-select>-->
-    <!--</mat-form-field>-->
+    <mat-form-field>
+      <mat-select
+        placeholder="Cosmonauts"
+        [(ngModel)]="selectedCosmonauts"
+        name="cosmonauts"
+        multiple>
+        <mat-option *ngFor="let cosmonaut of cosmonauts$ | async" [value]="cosmonaut">
+          {{cosmonaut.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
 
     <mat-form-field class="example-full-width">
       <input
-        [(ngModel)]="defaultSpaceflight.distance"
+        [(ngModel)]="spaceflight.distance"
         name="distance"
         matInput
         type="text"
@@ -51,32 +51,32 @@
     </mat-form-field>
     <p>ETA {{arriveTime | date: 'dd. MM. yyyy'}}</p>
 
-    <!--<mat-form-field class="example-full-width" *ngIf="defaultSpaceflight.spacecraft">-->
-      <!--<input-->
-        <!--[ngModel]="defaultSpaceflight.spacecraft.fuel"-->
-        <!--(ngModelChange)="fuel=$event"-->
-        <!--name="fuel"-->
-        <!--matInput-->
-        <!--type="number"-->
-        <!--min="0"-->
-        <!--max="100"-->
-        <!--placeholder="Fuel"-->
-        <!--required>-->
-    <!--</mat-form-field>-->
 
-    <!--<mat-form-field class="example-full-width" *ngIf="defaultSpaceflight.spacecraft">-->
-      <!--<input-->
-        <!--[ngModel]="defaultSpaceflight.spacecraft.food"-->
-        <!--(ngModelChange)="food=$event"-->
-        <!--name="food"-->
-        <!--matInput-->
-        <!--type="number"-->
-        <!--min="0"-->
-        <!--max="100"-->
-        <!--placeholder="Food"-->
-        <!--required>-->
-    <!--</mat-form-field>-->
-    <!--<p *ngIf="defaultSpaceflight.spacecraft">Food is {{food}}</p>-->
+    <mat-form-field class="example-full-width" *ngIf="selectedSpacecraft">
+      <input
+        [(ngModel)]="selectedSpacecraft.fuel"
+        (ngModelChange)="fuel=$event"
+        name="fuel"
+        matInput
+        type="number"
+        min="0"
+        max="100"
+        placeholder="Fuel"
+        required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" *ngIf="selectedSpacecraft">
+      <input
+        [ngModel]="selectedSpacecraft.food"
+        (ngModelChange)="food=$event"
+        name="food"
+        matInput
+        type="number"
+        min="0"
+        max="100"
+        placeholder="Food"
+        required>
+    </mat-form-field>
 
 
     <button
