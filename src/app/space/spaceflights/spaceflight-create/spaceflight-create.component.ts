@@ -138,19 +138,7 @@ export class SpaceflightCreateComponent implements OnInit {
       foodBoxCapacity: this.selectedSpacecraft.foodBoxCapacity,
       food: this.food
     };
-    const spaceCraftUpdate = {
-      _id: this.selectedSpacecraft._id,
-      name: this.selectedSpacecraft.name,
-      numberOfSeats: this.selectedSpacecraft.numberOfSeats,
-      fuelTankCapacity: this.selectedSpacecraft.fuelTankCapacity,
-      fuel: this.fuel,
-      fuelConsumption: this.selectedSpacecraft.fuelConsumption,
-      speed: this.selectedSpacecraft.speed,
-      maximumLoad: this.selectedSpacecraft.maximumLoad,
-      foodBoxCapacity: this.selectedSpacecraft.foodBoxCapacity,
-      food: this.food
-    };
-    this.store.dispatch(new SpaceCraftActions.Update({spacecraft: spaceCraftUpdate}));
+    this.store.dispatch(new SpaceCraftActions.Update({spacecraft: this.selectedSpacecraft}));
   }
 
   currentWeightCalculation() {

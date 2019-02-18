@@ -26,6 +26,7 @@ import { SpaceflightCreateComponent } from './spaceflights/spaceflight-create/sp
 import { SpaceflightErrorComponent } from './spaceflights/spaceflight-error/spaceflight-error.component';
 import { ErrorComponent } from '../error/error.component';
 import { ConfirmationComponent } from '../confirmation/confirmation.component';
+import { MinDirective } from './directives/minDirective.directive';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { ConfirmationComponent } from '../confirmation/confirmation.component';
     SpaceflightComponent,
     SpaceflightListComponent,
     SpaceflightCreateComponent,
-    SpaceflightErrorComponent
+    SpaceflightErrorComponent,
+    MinDirective
   ],
   imports: [
     BrowserModule,
