@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
-import { catchError, filter, map, mergeMap, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, tap, withLatestFrom } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { AppState } from '../../reducers';
 import { select, Store } from '@ngrx/store';
@@ -17,13 +17,15 @@ import {
 } from './cosmonaut.actions';
 import { allCosmonautsLoaded } from './cosmonaut.selectors';
 import { Cosmonaut } from '../models/cosmonaut.model';
+import { ConfirmationComponent } from '../../confirmation/confirmation.component';
+import { MatSnackBar } from '@angular/material';
 
 const BACKEND_URL = environment.apiUrl + '/cosmonauts/';
 
 @Injectable()
 export class CosmonautEffects {
 
-  constructor(private actions$: Actions, private httpClient: HttpClient, private store: Store<AppState>) {
+  constructor(private actions$: Actions, private httpClient: HttpClient, private store: Store<AppState>, private snackBar: MatSnackBar) {
   }
 
   @Effect()
@@ -57,6 +59,15 @@ export class CosmonautEffects {
         )
       )
     );
+  @Effect({dispatch: false})
+  createCosmonautSuccessful$ = this.actions$
+    .pipe(
+      ofType<CreateSuccessful>(CosmonautActionTypes.CreateActionSuccessful),
+      tap((action) => {
+        const message = 'Cosmonaut: ' + action.payload.cosmonaut.name + ' created';
+        this.snackBar.openFromComponent(ConfirmationComponent, {data: {message: message, action: 'Okay'}, duration: 3000});
+      })
+    );
 
   @Effect()
   updateCosmonaut$ = this.actions$
@@ -72,6 +83,15 @@ export class CosmonautEffects {
         )
       ),
     );
+  @Effect({dispatch: false})
+  updateCosmonautSuccessful$ = this.actions$
+    .pipe(
+      ofType<UpdateSuccessful>(CosmonautActionTypes.UpdateActionSuccessful),
+      tap((action) => {
+        const message = 'Cosmonaut: ' + action.payload.cosmonaut.name + ' updated';
+        this.snackBar.openFromComponent(ConfirmationComponent, {data: {message: message, action: 'Okay'}, duration: 3000});
+      })
+    );
 
   @Effect()
   deleteCosmonaut$ = this.actions$
@@ -86,6 +106,15 @@ export class CosmonautEffects {
           })
         )
       ),
+    );
+  @Effect({dispatch: false})
+  deleteCosmonautSuccessful$ = this.actions$
+    .pipe(
+      ofType<DeleteSuccessful>(CosmonautActionTypes.DeleteActionSuccessful),
+      tap((action) => {
+        const message = 'Cosmonaut deleted';
+        this.snackBar.openFromComponent(ConfirmationComponent, {data: {message: message, action: 'Okay'}, duration: 3000});
+      })
     );
 
 

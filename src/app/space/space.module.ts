@@ -23,6 +23,9 @@ import { SpaceflightListComponent } from './spaceflights/spaceflight-list/spacef
 import { spaceflightReducer } from './reducers/spaceflights.reducer';
 import { SpaceflightEffects } from './spaceflights/spaceflight.effects';
 import { SpaceflightCreateComponent } from './spaceflights/spaceflight-create/spaceflight-create.component';
+import { SpaceflightErrorComponent } from './spaceflights/spaceflight-error/spaceflight-error.component';
+import { ErrorComponent } from '../error/error.component';
+import { ConfirmationComponent } from '../confirmation/confirmation.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +38,8 @@ import { SpaceflightCreateComponent } from './spaceflights/spaceflight-create/sp
     DashboardComponent,
     SpaceflightComponent,
     SpaceflightListComponent,
-    SpaceflightCreateComponent
+    SpaceflightCreateComponent,
+    SpaceflightErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -59,6 +63,7 @@ import { SpaceflightCreateComponent } from './spaceflights/spaceflight-create/sp
     SpaceflightListComponent,
     SpaceflightCreateComponent,
     DashboardComponent
-  ]
+  ],
+  entryComponents: [SpaceflightErrorComponent]
 })
 export class SpaceModule {}

@@ -77,6 +77,12 @@
         placeholder="Food"
         required>
     </mat-form-field>
+    <div class="mat-error">
+      <div *ngIf="fuelProblem">*Not enough fuel</div>
+      <div *ngIf="foodProblem">*Not enough food</div>
+      <div *ngIf="foodProblemStarvation">*Young cosmonauts will starve</div>
+      <div *ngIf="weightProblem">*Spacecraft is overloaded</div>
+    </div>
 
 
     <button

@@ -8,7 +8,7 @@ import {
   Delete, DeleteSuccessful,
   SpacecraftActionTypes, Update, UpdateSuccessful
 } from './spacecraft.actions';
-import { catchError, filter, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Spacecraft } from '../models/spacecraft.model';
 import { AppState } from '../../reducers/index';
@@ -16,13 +16,15 @@ import { select, Store } from '@ngrx/store';
 import { allSpacecraftsLoaded } from './spacecraft.selectors';
 import { of } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { ConfirmationComponent } from '../../confirmation/confirmation.component';
+import { MatSnackBar } from '@angular/material';
 
 const BACKEND_URL = environment.apiUrl + '/spacecrafts/';
 
 @Injectable()
 export class SpacecraftEffects {
 
-  constructor(private actions$: Actions, private httpClient: HttpClient, private store: Store<AppState>) {
+  constructor(private actions$: Actions, private httpClient: HttpClient, private store: Store<AppState>, private snackBar: MatSnackBar) {
   }
 
   @Effect()
@@ -56,6 +58,15 @@ export class SpacecraftEffects {
         )
       ),
     );
+  @Effect({dispatch: false})
+  createSpacecraftSuccessful$ = this.actions$
+    .pipe(
+      ofType<CreateSuccessful>(SpacecraftActionTypes.CreateActionSuccessful),
+      tap((action) => {
+        const message = 'Spacecraft: ' + action.payload.spacecraft.name + ' created';
+        this.snackBar.openFromComponent(ConfirmationComponent, {data: {message: message, action: 'Okay'}, duration: 3000});
+      })
+    );
 
   @Effect()
   deleteSpacecraft$ = this.actions$
@@ -71,6 +82,15 @@ export class SpacecraftEffects {
         )
       ),
     );
+  @Effect({dispatch: false})
+  deleteSpacecraftSuccessful$ = this.actions$
+    .pipe(
+      ofType<DeleteSuccessful>(SpacecraftActionTypes.DeleteActionSuccessful),
+      tap((action) => {
+        const message = 'Spacecraft deleted';
+        this.snackBar.openFromComponent(ConfirmationComponent, {data: {message: message, action: 'Okay'}, duration: 3000});
+      })
+    );
 
   @Effect()
   updateSpacecraft$ = this.actions$
@@ -85,6 +105,15 @@ export class SpacecraftEffects {
           })
         )
       ),
+    );
+  @Effect({dispatch: false})
+  updateSpacecraftSuccessful$ = this.actions$
+    .pipe(
+      ofType<UpdateSuccessful>(SpacecraftActionTypes.UpdateActionSuccessful),
+      tap((action) => {
+        const message = 'Spacecraft: ' + action.payload.spacecraft.name + ' updated';
+        this.snackBar.openFromComponent(ConfirmationComponent, {data: {message: message, action: 'Okay'}, duration: 3000});
+      })
     );
 
 

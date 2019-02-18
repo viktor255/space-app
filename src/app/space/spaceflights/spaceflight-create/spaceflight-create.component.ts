@@ -15,7 +15,9 @@ import { AllCosmonautsRequested } from '../../cosmonauts/cosmonaut.actions';
 import { selectAllCosmonauts } from '../../cosmonauts/cosmonaut.selectors';
 
 import * as SpaceCraftActions from '../../spacecrafts/spacecraft.actions';
-import { forEach } from '@angular/router/src/utils/collection';
+import { ErrorComponent } from '../../../error/error.component';
+import { MatDialog } from '@angular/material';
+import { SpaceflightErrorComponent } from '../spaceflight-error/spaceflight-error.component';
 
 @Component({
   selector: 'app-spaceflight-create',
@@ -40,7 +42,17 @@ export class SpaceflightCreateComponent implements OnInit {
   public selectedCosmonauts: Cosmonaut[];
   public currentWeight = 0;
 
-  constructor(private store: Store<AppState>, public route: ActivatedRoute, private router: Router) {
+  public foodProblem = false;
+  public foodProblemStarvation = false;
+  public fuelProblem = false;
+  public weightProblem = false;
+
+  private fuelProblemMessage: string;
+  private foodProblemMessage: string;
+  private foodProblemStarvationMessage: string;
+  private weightProblemMessage: string;
+
+  constructor(private store: Store<AppState>, public route: ActivatedRoute, private router: Router, private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -126,7 +138,19 @@ export class SpaceflightCreateComponent implements OnInit {
       foodBoxCapacity: this.selectedSpacecraft.foodBoxCapacity,
       food: this.food
     };
-    this.store.dispatch(new SpaceCraftActions.Update({spacecraft: this.selectedSpacecraft}));
+    const spaceCraftUpdate = {
+      _id: this.selectedSpacecraft._id,
+      name: this.selectedSpacecraft.name,
+      numberOfSeats: this.selectedSpacecraft.numberOfSeats,
+      fuelTankCapacity: this.selectedSpacecraft.fuelTankCapacity,
+      fuel: this.fuel,
+      fuelConsumption: this.selectedSpacecraft.fuelConsumption,
+      speed: this.selectedSpacecraft.speed,
+      maximumLoad: this.selectedSpacecraft.maximumLoad,
+      foodBoxCapacity: this.selectedSpacecraft.foodBoxCapacity,
+      food: this.food
+    };
+    this.store.dispatch(new SpaceCraftActions.Update({spacecraft: spaceCraftUpdate}));
   }
 
   currentWeightCalculation() {
@@ -137,9 +161,17 @@ export class SpaceflightCreateComponent implements OnInit {
     this.currentWeight += this.selectedSpacecraft.foodBoxCapacity * (this.food / 100);
     if (this.currentWeight >= this.selectedSpacecraft.maximumLoad) {
       console.log('Spacecraft is overloaded');
+      this.weightProblem = true;
+      this.weightProblemMessage = 'Spacecraft is overloaded. Change quantity of food or cosmonauts '
+        + 'Current load is: ' + this.currentWeight
+        + ' Maximum load is: ' + this.selectedSpacecraft.maximumLoad;
+    } else {
+      this.weightProblem = false;
+      this.weightProblemMessage = '';
     }
     console.log('Current weight is: ' + this.currentWeight);
     console.log('Maximum load is: ' + this.selectedSpacecraft.maximumLoad);
+
   }
 
   calculateFuel() {
@@ -150,6 +182,19 @@ export class SpaceflightCreateComponent implements OnInit {
 
     if (currentFuel < fuelNeeded) {
       console.log('Spacecraft has not enough fuel');
+      this.fuelProblem = true;
+      if (fuelNeeded > this.selectedSpacecraft.fuelTankCapacity) {
+        this.fuelProblemMessage = 'This spacecraft can not fly that far. '
+          + 'Current fuel is: ' + currentFuel
+          + ' Fuel needed for this flight is: ' + fuelNeeded;
+      } else {
+        this.fuelProblemMessage = 'Spacecraft has not enough fuel. Fill the tank. '
+          + 'Current fuel is: ' + currentFuel
+          + ' Fuel needed for this flight is: ' + fuelNeeded;
+      }
+    } else {
+      this.fuelProblem = false;
+      this.fuelProblemMessage = '';
     }
     console.log('Current fuel is: ' + currentFuel);
     console.log('Fuel needed for this flight is: ' + fuelNeeded);
@@ -185,14 +230,36 @@ export class SpaceflightCreateComponent implements OnInit {
     });
     if (currentFood < foodNeeded && currentFood > foodNeededHungry) {
       console.log('Young cosmonauts will starve for max 30% of time');
+      this.foodProblemStarvation = true;
+      this.foodProblemStarvationMessage = 'Young cosmonauts will starve for max 30% of time. '
+        + 'Current food is: ' + currentFood
+        + ' Food needed for this flight without starvation is: ' + foodNeeded;
+    } else {
+      this.foodProblemStarvationMessage = '';
+      this.foodProblemStarvation = false;
     }
     if (currentFood < foodNeededHungry) {
       console.log('Spacecraft has not enough food');
+      this.foodProblem = true;
+
+      if (foodNeededHungry > this.selectedSpacecraft.foodBoxCapacity) {
+        this.foodProblemMessage = 'Spacecraft has small foodbox for such a long flight. '
+          + 'Current food is: ' + currentFood
+          + ' Food needed for this flight with starvation is: ' + foodNeededHungry;
+
+      } else {
+        this.foodProblemMessage = 'Spacecraft has not enough food. Add food. '
+          + 'Current food is: ' + currentFood
+          + ' Food needed for this flight with starvation is: ' + foodNeededHungry;
+      }
+
+    } else {
+      this.foodProblem = false;
+      this.foodProblemMessage = '';
     }
     console.log('Current food is: ' + currentFood);
     console.log('Food needed for this flight without starvation is: ' + foodNeeded);
     console.log('Food needed for this flight with starvation is: ' + foodNeededHungry);
-
   }
 
 
@@ -218,6 +285,18 @@ export class SpaceflightCreateComponent implements OnInit {
       this.currentWeightCalculation();
       this.calculateFuel();
       this.calculateFood();
+
+
+      if (this.foodProblem || this.fuelProblem || this.foodProblemStarvation || this.weightProblem) {
+        this.dialog.open(SpaceflightErrorComponent, {
+          data: {
+            message: this.fuelProblemMessage,
+            message2: this.foodProblemMessage,
+            message3: this.foodProblemStarvationMessage,
+            message4: this.weightProblemMessage,
+          }
+        });
+      }
 
     } else {
       // this.store.dispatch(new Update({spaceflight: this.spaceflight}));
