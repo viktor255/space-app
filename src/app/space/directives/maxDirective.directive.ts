@@ -3,17 +3,17 @@ import { AbstractControl, NG_VALIDATORS, Validator, ValidatorFn, Validators } fr
 
 
 @Directive({
-  selector: '[appMin]',
+  selector: '[appMax]',
   providers: [
     { provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => MinDirective),
+      useExisting: forwardRef(() => MaxDirective),
       multi: true }
   ]
 })
-export class MinDirective implements Validator {
+export class MaxDirective implements Validator {
   private _validator: ValidatorFn;
-  @Input() public set appMin(value: string) {
-    this._validator = Validators.min(parseInt(value, 10));
+  @Input() public set appMax(value: string) {
+    this._validator = Validators.max(parseInt(value, 10));
   }
 
   public validate(control: AbstractControl): { [key: string]: any } {

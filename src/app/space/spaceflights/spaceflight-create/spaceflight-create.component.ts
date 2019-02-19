@@ -120,10 +120,10 @@ export class SpaceflightCreateComponent implements OnInit {
   }
 
   changeFoodAndFuel() {
-    if (!this.food) {
+    if (this.food === undefined) {
       this.food = this.selectedSpacecraft.food;
     }
-    if (!this.fuel) {
+    if (this.fuel === undefined) {
       this.fuel = this.selectedSpacecraft.fuel;
     }
     this.selectedSpacecraft = {

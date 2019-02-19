@@ -59,8 +59,8 @@
         name="fuel"
         matInput
         type="number"
-        min=10
-        max=100
+        [appMin]="0"
+        [appMax]="100"
         placeholder="Fuel"
         required>
     </mat-form-field>
@@ -72,8 +72,8 @@
         name="food"
         matInput
         type="number"
-        min="10"
-        max="100"
+        [appMin]="0"
+        [appMax]="100"
         placeholder="Food"
         required>
     </mat-form-field>
