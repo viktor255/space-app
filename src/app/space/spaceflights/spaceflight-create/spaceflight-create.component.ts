@@ -6,11 +6,11 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Spaceflight } from '../../models/spaceflight.model';
 import { AllSpaceflightsRequested, Create, Update } from '../spaceflight.actions';
-import { selectSpaceflightById } from '../spaceflight.selectors';
+import { selectAllSpaceflights, selectSpaceflightById } from '../spaceflight.selectors';
 import { Spacecraft } from '../../models/spacecraft.model';
 import { Cosmonaut } from '../../models/cosmonaut.model';
 import { AllSpacecraftsRequested } from '../../spacecrafts/spacecraft.actions';
-import { selectAllSpacecrafts } from '../../spacecrafts/spacecraft.selectors';
+import { selectAllSpacecrafts, selectSpacecraftById } from '../../spacecrafts/spacecraft.selectors';
 import { AllCosmonautsRequested } from '../../cosmonauts/cosmonaut.actions';
 import { selectAllCosmonauts } from '../../cosmonauts/cosmonaut.selectors';
 
@@ -18,6 +18,7 @@ import * as SpaceCraftActions from '../../spacecrafts/spacecraft.actions';
 import { ErrorComponent } from '../../../error/error.component';
 import { MatDialog } from '@angular/material';
 import { SpaceflightErrorComponent } from '../spaceflight-error/spaceflight-error.component';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-spaceflight-create',
@@ -33,6 +34,7 @@ export class SpaceflightCreateComponent implements OnInit {
 
   spacecrafts$: Observable<Spacecraft[]>;
   cosmonauts$: Observable<Cosmonaut[]>;
+  spaceflights$: Observable<Spaceflight[]>;
 
   public arriveTime: number;
   public startDate: string;
@@ -46,11 +48,15 @@ export class SpaceflightCreateComponent implements OnInit {
   public foodProblemStarvation = false;
   public fuelProblem = false;
   public weightProblem = false;
+  public cosmonautUnavailableProblem = false;
 
   private fuelProblemMessage: string;
   private foodProblemMessage: string;
   private foodProblemStarvationMessage: string;
   private weightProblemMessage: string;
+
+  private cosmonautsUnavailable: Cosmonaut[] = [];
+  private cosmonautsUnavailabilityMessage = '';
 
   constructor(private store: Store<AppState>, public route: ActivatedRoute, private router: Router, private dialog: MatDialog) {
   }
@@ -90,8 +96,58 @@ export class SpaceflightCreateComponent implements OnInit {
     this.spacecrafts$ = this.store.pipe(select(selectAllSpacecrafts));
     this.store.dispatch(new AllCosmonautsRequested());
     this.cosmonauts$ = this.store.pipe(select(selectAllCosmonauts));
+    this.store.dispatch(new AllSpaceflightsRequested());
+    this.spaceflights$ = this.store.pipe(select(selectAllSpaceflights));
+  }
 
+  checkCosmonautsAvailability() {
+    // this.selectedCosmonauts.forEach(cosmonaut => {});
+    this.spaceflights$.subscribe((spaceflights: Spaceflight[]) => {
+      spaceflights.forEach((otherSpaceflight) => {
+        // console.log('This will be other Spaceflight');
+        // console.log(otherSpaceflight);
+        const otherSpacecraft$ = this.store.pipe(select(selectSpacecraftById(otherSpaceflight.spacecraftId)));
+        otherSpacecraft$.subscribe(otherSpacecraft => {
+          const otherArriveTime = otherSpaceflight.startTime + (otherSpaceflight.distance / otherSpacecraft.speed) * 60 * 60 * 1000;
+          // console.log('This is other arriveTime ' + otherArriveTime);
 
+          this.selectedCosmonauts.forEach((thisSpaceflightCosmonaut) => {
+            otherSpaceflight.cosmonautsIds.forEach((otherSpaceflightCosmonautId) => {
+              // console.log('This should happen 4 times');
+              if (thisSpaceflightCosmonaut._id === otherSpaceflightCosmonautId) {
+                // console.log('Cosmonauts id match found');
+                if (otherSpaceflight.startTime * 1000 < this.spaceflight.startTime) {
+                  // console.log('Other starts first');
+                  // console.log('This spaceflight start time ' + this.spaceflight.startTime);
+                  if (otherArriveTime > this.spaceflight.startTime) {
+                    console.log(thisSpaceflightCosmonaut.name + ' is unavailable at given time.');
+                    this.cosmonautsUnavailable.push(thisSpaceflightCosmonaut);
+                    this.cosmonautUnavailableProblem = true;
+                    this.cosmonautsUnavailabilityMessage = this.cosmonautsUnavailabilityMessage
+                      + thisSpaceflightCosmonaut.name + ' is unavailable at given time. ';
+                  } else {
+                    this.cosmonautUnavailableProblem = false;
+                    this.cosmonautsUnavailabilityMessage = '';
+                  }
+                } else {
+                  // console.log('This starts first');
+                  if (this.arriveTime > otherSpaceflight.startTime * 1000) {
+                    console.log(thisSpaceflightCosmonaut.name + ' is unavailable at given time.');
+                    this.cosmonautsUnavailable.push(thisSpaceflightCosmonaut);
+                    this.cosmonautUnavailableProblem = true;
+                    this.cosmonautsUnavailabilityMessage = this.cosmonautsUnavailabilityMessage
+                      + thisSpaceflightCosmonaut.name + ' is unavailable at given time. ';
+                  } else {
+                    this.cosmonautUnavailableProblem = false;
+                    this.cosmonautsUnavailabilityMessage = '';
+                  }
+                }
+              }
+            });
+          });
+        });
+      });
+    });
   }
 
   onSelectChange() {
@@ -100,8 +156,7 @@ export class SpaceflightCreateComponent implements OnInit {
     console.log('On select change activated');
     console.log('Start date from input: ' + this.startDate);
     // console.log('This is before epocha' + this.spaceflight.startTime);
-    this.arriveTime = this.spaceflight.startTime.valueOf()
-      + (this.spaceflight.distance / this.selectedSpacecraft.speed) * 60 * 60 * 1000;
+    this.arriveTime = this.spaceflight.startTime + (this.spaceflight.distance / this.selectedSpacecraft.speed) * 60 * 60 * 1000;
   }
 
   onSpacecraftChange() {
@@ -273,6 +328,7 @@ export class SpaceflightCreateComponent implements OnInit {
       this.currentWeightCalculation();
       this.calculateFuel();
       this.calculateFood();
+      this.checkCosmonautsAvailability();
 
 
       if (this.foodProblem || this.fuelProblem || this.foodProblemStarvation || this.weightProblem) {
@@ -282,6 +338,7 @@ export class SpaceflightCreateComponent implements OnInit {
             message2: this.foodProblemMessage,
             message3: this.foodProblemStarvationMessage,
             message4: this.weightProblemMessage,
+            message5: this.cosmonautsUnavailabilityMessage
           }
         });
       }
