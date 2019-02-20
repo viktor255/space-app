@@ -101,6 +101,7 @@ export class SpaceflightCreateComponent implements OnInit {
   }
 
   checkCosmonautsAvailability() {
+    this.cosmonautsUnavailabilityMessage = '';
     // this.selectedCosmonauts.forEach(cosmonaut => {});
     this.spaceflights$.subscribe((spaceflights: Spaceflight[]) => {
       spaceflights.forEach((otherSpaceflight) => {
@@ -222,6 +223,7 @@ export class SpaceflightCreateComponent implements OnInit {
     const travelTimeMs = this.arriveTime - this.spaceflight.startTime;
     const travelTimeHours = travelTimeMs / (1000 * 60 * 60);
     const fuelNeeded = travelTimeHours * this.selectedSpacecraft.fuelConsumption;
+    const fuelNeededPercentage = Math.ceil((fuelNeeded / this.selectedSpacecraft.fuelTankCapacity) * 100);
 
     if (currentFuel < fuelNeeded) {
       console.log('Spacecraft has not enough fuel');
@@ -231,7 +233,7 @@ export class SpaceflightCreateComponent implements OnInit {
           + 'Current fuel is: ' + currentFuel
           + ' Fuel needed for this flight is: ' + fuelNeeded;
       } else {
-        this.fuelProblemMessage = 'Spacecraft has not enough fuel. Fill the tank. '
+        this.fuelProblemMessage = 'Spacecraft has not enough fuel. Fill the tank to at least ' + fuelNeededPercentage + '%. '
           + 'Current fuel is: ' + currentFuel
           + ' Fuel needed for this flight is: ' + fuelNeeded;
       }
@@ -269,12 +271,16 @@ export class SpaceflightCreateComponent implements OnInit {
         foodNeededHungry += cosmonaut.foodConsumption * travelTimeHours;
       }
       console.log('Age of cosmonaut ' + cosmonaut.name + ' is: ' + this.getAge(cosmonaut.dateOfBirth));
-
     });
+
+    const foodNeededPercentageHungry = Math.ceil((foodNeededHungry / this.selectedSpacecraft.foodBoxCapacity) * 100);
+    const foodNeededPercentage = Math.ceil((foodNeeded / this.selectedSpacecraft.foodBoxCapacity) * 100);
+
     if (currentFood < foodNeeded && currentFood > foodNeededHungry) {
       console.log('Young cosmonauts will starve for max 30% of time');
       this.foodProblemStarvation = true;
-      this.foodProblemStarvationMessage = 'Young cosmonauts will starve for max 30% of time. '
+      this.foodProblemStarvationMessage = 'Young cosmonauts will starve for max 30% of time. Fill up to at least '
+        + foodNeededPercentage + '%.'
         + 'Current food is: ' + currentFood
         + ' Food needed for this flight without starvation is: ' + foodNeeded;
     } else {
@@ -291,7 +297,9 @@ export class SpaceflightCreateComponent implements OnInit {
           + ' Food needed for this flight with starvation is: ' + foodNeededHungry;
 
       } else {
-        this.foodProblemMessage = 'Spacecraft has not enough food. Add food. '
+        this.foodProblemMessage = 'Spacecraft has not enough food. Add food. To at least '
+          + foodNeededPercentageHungry + '% / '
+          + foodNeededPercentage + '%.'
           + 'Current food is: ' + currentFood
           + ' Food needed for this flight with starvation is: ' + foodNeededHungry;
       }
