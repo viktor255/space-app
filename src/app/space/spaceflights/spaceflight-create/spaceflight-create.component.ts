@@ -1,11 +1,11 @@
-import { Component, OnChanges, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../../../reducers';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Spaceflight } from '../../models/spaceflight.model';
-import { AllSpaceflightsRequested, Create, Update } from '../spaceflight.actions';
+import { AllSpaceflightsRequested, Create } from '../spaceflight.actions';
 import { selectAllSpaceflights, selectSpaceflightById } from '../spaceflight.selectors';
 import { Spacecraft } from '../../models/spacecraft.model';
 import { Cosmonaut } from '../../models/cosmonaut.model';
@@ -15,10 +15,8 @@ import { AllCosmonautsRequested } from '../../cosmonauts/cosmonaut.actions';
 import { selectAllCosmonauts } from '../../cosmonauts/cosmonaut.selectors';
 
 import * as SpaceCraftActions from '../../spacecrafts/spacecraft.actions';
-import { ErrorComponent } from '../../../error/error.component';
 import { MatDialog } from '@angular/material';
 import { SpaceflightErrorComponent } from '../spaceflight-error/spaceflight-error.component';
-import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-spaceflight-create',
@@ -32,9 +30,9 @@ export class SpaceflightCreateComponent implements OnInit {
   public spaceflight: Spaceflight;
   public isLoading = true;
 
-  spacecrafts$: Observable<Spacecraft[]>;
-  cosmonauts$: Observable<Cosmonaut[]>;
-  spaceflights$: Observable<Spaceflight[]>;
+  public spacecrafts$: Observable<Spacecraft[]>;
+  public cosmonauts$: Observable<Cosmonaut[]>;
+  public spaceflights$: Observable<Spaceflight[]>;
 
   public arriveTime: number;
   public startDate: string;
@@ -100,7 +98,164 @@ export class SpaceflightCreateComponent implements OnInit {
     this.spaceflights$ = this.store.pipe(select(selectAllSpaceflights));
   }
 
-  checkCosmonautsAvailability() {
+  onSelectChange() {
+    this.spaceflight.spacecraftId = this.selectedSpacecraft._id;
+    this.spaceflight.startTime = new Date(this.startDate).valueOf();
+    console.log('On select change activated');
+    console.log('Start date from input: ' + this.startDate);
+    // console.log('This is before epocha' + this.spaceflight.startTime);
+    this.arriveTime = this.spaceflight.startTime + (this.spaceflight.distance / this.selectedSpacecraft.speed) * 60 * 60 * 1000;
+  }
+
+  saveCosmonauts() {
+    this.selectedCosmonauts.forEach(cosmonaut => {
+      if (!this.spaceflight.cosmonautsIds.includes(cosmonaut._id)) {
+        this.spaceflight.cosmonautsIds.push(cosmonaut._id);
+      }
+    });
+  }
+
+  changeFoodAndFuel() {
+    if (this.food === undefined) {
+      this.food = this.selectedSpacecraft.food;
+    }
+    if (this.fuel === undefined) {
+      this.fuel = this.selectedSpacecraft.fuel;
+    }
+    this.selectedSpacecraft = {
+      _id: this.selectedSpacecraft._id,
+      name: this.selectedSpacecraft.name,
+      numberOfSeats: this.selectedSpacecraft.numberOfSeats,
+      fuelTankCapacity: this.selectedSpacecraft.fuelTankCapacity,
+      fuel: this.fuel,
+      fuelConsumption: this.selectedSpacecraft.fuelConsumption,
+      speed: this.selectedSpacecraft.speed,
+      maximumLoad: this.selectedSpacecraft.maximumLoad,
+      foodBoxCapacity: this.selectedSpacecraft.foodBoxCapacity,
+      food: this.food
+    };
+    this.store.dispatch(new SpaceCraftActions.Update({spacecraft: this.selectedSpacecraft}));
+  }
+
+  getAge(dateString) {
+    const today = new Date();
+    const birthDate = new Date(dateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
+
+  calculateWeight() {
+    this.currentWeight = 0;
+    this.selectedCosmonauts.forEach(cosmonaut => {
+      this.currentWeight += cosmonaut.weight;
+    });
+    this.currentWeight += this.selectedSpacecraft.foodBoxCapacity * (this.food / 100);
+    if (this.currentWeight >= this.selectedSpacecraft.maximumLoad) {
+      console.log('Spacecraft is overloaded');
+      this.weightProblem = true;
+      this.weightProblemMessage = 'Spacecraft is overloaded. Change quantity of food or cosmonauts '
+        + 'Current load is: ' + this.currentWeight + 'kg.'
+        + ' Maximum load is: ' + this.selectedSpacecraft.maximumLoad + 'kg.';
+    } else {
+      this.weightProblem = false;
+      this.weightProblemMessage = '';
+    }
+    console.log('Current weight is: ' + this.currentWeight);
+    console.log('Maximum load is: ' + this.selectedSpacecraft.maximumLoad);
+
+  }
+
+  calculateFuel() {
+    const currentFuel = (this.fuel / 100) * this.selectedSpacecraft.fuelTankCapacity;
+    const travelTimeMs = this.arriveTime - this.spaceflight.startTime;
+    const travelTimeHours = travelTimeMs / (1000 * 60 * 60);
+    const fuelNeeded = Math.ceil(travelTimeHours * this.selectedSpacecraft.fuelConsumption);
+    const fuelNeededPercentage = Math.ceil((fuelNeeded / this.selectedSpacecraft.fuelTankCapacity) * 100);
+
+    if (currentFuel < fuelNeeded) {
+      console.log('Spacecraft has not enough fuel');
+      this.fuelProblem = true;
+      if (fuelNeeded > this.selectedSpacecraft.fuelTankCapacity) {
+        this.fuelProblemMessage = 'This spacecraft can not fly that far. '
+          + 'Maximum fuel is: ' + this.selectedSpacecraft.fuelTankCapacity + 'l.'
+          + ' Fuel needed for this flight is: ' + fuelNeeded + 'l.';
+      } else {
+        this.fuelProblemMessage = 'Spacecraft has not enough fuel. Fill the tank to at least ' + fuelNeededPercentage + '%. '
+          + 'Current fuel is: ' + currentFuel + 'l.'
+          + ' Fuel needed for this flight is: ' + fuelNeeded + 'l.';
+      }
+    } else {
+      this.fuelProblem = false;
+      this.fuelProblemMessage = '';
+    }
+    // console.log('Current fuel is: ' + currentFuel);
+    // console.log('Fuel needed for this flight is: ' + fuelNeeded);
+  }
+
+  calculateFood() {
+    const currentFood = (this.food / 100) * this.selectedSpacecraft.foodBoxCapacity;
+    const travelTimeMs = this.arriveTime - this.spaceflight.startTime;
+    const travelTimeHours = travelTimeMs / (1000 * 60 * 60);
+    let foodNeeded = 0;
+    let foodNeededHungry = 0;
+    this.selectedCosmonauts.forEach(cosmonaut => {
+      foodNeeded += cosmonaut.foodConsumption * travelTimeHours;
+      const ageOfCosmonaut = this.getAge(cosmonaut.dateOfBirth);
+      if (ageOfCosmonaut <= 40 && ageOfCosmonaut >= 20) {
+        foodNeededHungry += cosmonaut.foodConsumption * travelTimeHours * 0.7;
+      } else {
+        foodNeededHungry += cosmonaut.foodConsumption * travelTimeHours;
+      }
+      console.log('Age of cosmonaut ' + cosmonaut.name + ' is: ' + this.getAge(cosmonaut.dateOfBirth));
+    });
+    foodNeeded = Math.ceil(foodNeeded);
+    foodNeededHungry = Math.ceil(foodNeededHungry);
+
+    const foodNeededPercentageHungry = Math.ceil((foodNeededHungry / this.selectedSpacecraft.foodBoxCapacity) * 100);
+    const foodNeededPercentage = Math.ceil((foodNeeded / this.selectedSpacecraft.foodBoxCapacity) * 100);
+
+    if (currentFood < foodNeeded && currentFood > foodNeededHungry) {
+      console.log('Young cosmonauts will starve for max 30% of time');
+      this.foodProblemStarvation = true;
+      this.foodProblemStarvationMessage = 'Young cosmonauts will starve for max 30% of time. Fill up to at least '
+        + foodNeededPercentage + '%.'
+        + 'Current food is: ' + currentFood + 'kg.'
+        + ' Food needed for this flight without starvation is: ' + foodNeeded + 'kg.';
+    } else {
+      this.foodProblemStarvationMessage = '';
+      this.foodProblemStarvation = false;
+    }
+    if (currentFood < foodNeededHungry) {
+      console.log('Spacecraft has not enough food');
+      this.foodProblem = true;
+
+      if (foodNeededHungry > this.selectedSpacecraft.foodBoxCapacity) {
+        this.foodProblemMessage = 'Spacecraft has small foodbox for such a long flight. '
+          + 'Maximum food is: ' + this.selectedSpacecraft.foodBoxCapacity + 'kg.'
+          + ' Food needed for this flight is: ' + foodNeededHungry + '/' + foodNeeded + 'kg.';
+
+      } else {
+        this.foodProblemMessage = 'Spacecraft has not enough food. Add food. To at least '
+          + foodNeededPercentageHungry + '% / '
+          + foodNeededPercentage + '%.'
+          + 'Current food is: ' + currentFood + 'kg.'
+          + ' Food needed for this flight is: ' + foodNeededHungry + '/' + foodNeeded + 'kg.';
+      }
+
+    } else {
+      this.foodProblem = false;
+      this.foodProblemMessage = '';
+    }
+    console.log('Current food is: ' + currentFood);
+    console.log('Food needed for this flight without starvation is: ' + foodNeeded);
+    console.log('Food needed for this flight with starvation is: ' + foodNeededHungry);
+  }
+
+  calculateCosmonautsAvailability() {
     this.cosmonautsUnavailabilityMessage = '';
     // this.selectedCosmonauts.forEach(cosmonaut => {});
     this.spaceflights$.subscribe((spaceflights: Spaceflight[]) => {
@@ -151,168 +306,19 @@ export class SpaceflightCreateComponent implements OnInit {
     });
   }
 
-  onSelectChange() {
-    this.spaceflight.spacecraftId = this.selectedSpacecraft._id;
-    this.spaceflight.startTime = new Date(this.startDate).valueOf();
-    console.log('On select change activated');
-    console.log('Start date from input: ' + this.startDate);
-    // console.log('This is before epocha' + this.spaceflight.startTime);
-    this.arriveTime = this.spaceflight.startTime + (this.spaceflight.distance / this.selectedSpacecraft.speed) * 60 * 60 * 1000;
-  }
-
-  onSpacecraftChange() {
-
-    console.log('onSpacecraftChange method invoked');
-    // console.log(this.spaceflight.spacecraftId.food);
-    // console.log(this.spaceflight.spacecraftId);
-  }
-
-  saveCosmonauts() {
-    this.selectedCosmonauts.forEach(cosmonaut => {
-      if (!this.spaceflight.cosmonautsIds.includes(cosmonaut._id)) {
-        this.spaceflight.cosmonautsIds.push(cosmonaut._id);
-      }
-    });
-  }
-
-  changeFoodAndFuel() {
-    if (this.food === undefined) {
-      this.food = this.selectedSpacecraft.food;
+  checkProblems() {
+    if (this.foodProblem || this.fuelProblem || this.foodProblemStarvation || this.weightProblem) {
+      this.dialog.open(SpaceflightErrorComponent, {
+        data: {
+          message: this.fuelProblemMessage,
+          message2: this.foodProblemMessage,
+          message3: this.foodProblemStarvationMessage,
+          message4: this.weightProblemMessage,
+          message5: this.cosmonautsUnavailabilityMessage
+        }
+      });
     }
-    if (this.fuel === undefined) {
-      this.fuel = this.selectedSpacecraft.fuel;
-    }
-    this.selectedSpacecraft = {
-      _id: this.selectedSpacecraft._id,
-      name: this.selectedSpacecraft.name,
-      numberOfSeats: this.selectedSpacecraft.numberOfSeats,
-      fuelTankCapacity: this.selectedSpacecraft.fuelTankCapacity,
-      fuel: this.fuel,
-      fuelConsumption: this.selectedSpacecraft.fuelConsumption,
-      speed: this.selectedSpacecraft.speed,
-      maximumLoad: this.selectedSpacecraft.maximumLoad,
-      foodBoxCapacity: this.selectedSpacecraft.foodBoxCapacity,
-      food: this.food
-    };
-    this.store.dispatch(new SpaceCraftActions.Update({spacecraft: this.selectedSpacecraft}));
   }
-
-  currentWeightCalculation() {
-    this.currentWeight = 0;
-    this.selectedCosmonauts.forEach(cosmonaut => {
-      this.currentWeight += cosmonaut.weight;
-    });
-    this.currentWeight += this.selectedSpacecraft.foodBoxCapacity * (this.food / 100);
-    if (this.currentWeight >= this.selectedSpacecraft.maximumLoad) {
-      console.log('Spacecraft is overloaded');
-      this.weightProblem = true;
-      this.weightProblemMessage = 'Spacecraft is overloaded. Change quantity of food or cosmonauts '
-        + 'Current load is: ' + this.currentWeight
-        + ' Maximum load is: ' + this.selectedSpacecraft.maximumLoad;
-    } else {
-      this.weightProblem = false;
-      this.weightProblemMessage = '';
-    }
-    console.log('Current weight is: ' + this.currentWeight);
-    console.log('Maximum load is: ' + this.selectedSpacecraft.maximumLoad);
-
-  }
-
-  calculateFuel() {
-    const currentFuel = (this.fuel / 100) * this.selectedSpacecraft.fuelTankCapacity;
-    const travelTimeMs = this.arriveTime - this.spaceflight.startTime;
-    const travelTimeHours = travelTimeMs / (1000 * 60 * 60);
-    const fuelNeeded = travelTimeHours * this.selectedSpacecraft.fuelConsumption;
-    const fuelNeededPercentage = Math.ceil((fuelNeeded / this.selectedSpacecraft.fuelTankCapacity) * 100);
-
-    if (currentFuel < fuelNeeded) {
-      console.log('Spacecraft has not enough fuel');
-      this.fuelProblem = true;
-      if (fuelNeeded > this.selectedSpacecraft.fuelTankCapacity) {
-        this.fuelProblemMessage = 'This spacecraft can not fly that far. '
-          + 'Current fuel is: ' + currentFuel
-          + ' Fuel needed for this flight is: ' + fuelNeeded;
-      } else {
-        this.fuelProblemMessage = 'Spacecraft has not enough fuel. Fill the tank to at least ' + fuelNeededPercentage + '%. '
-          + 'Current fuel is: ' + currentFuel
-          + ' Fuel needed for this flight is: ' + fuelNeeded;
-      }
-    } else {
-      this.fuelProblem = false;
-      this.fuelProblemMessage = '';
-    }
-    console.log('Current fuel is: ' + currentFuel);
-    console.log('Fuel needed for this flight is: ' + fuelNeeded);
-  }
-
-  getAge(dateString) {
-    const today = new Date();
-    const birthDate = new Date(dateString);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  }
-
-  calculateFood() {
-    const currentFood = (this.food / 100) * this.selectedSpacecraft.foodBoxCapacity;
-    const travelTimeMs = this.arriveTime - this.spaceflight.startTime;
-    const travelTimeHours = travelTimeMs / (1000 * 60 * 60);
-    let foodNeeded = 0;
-    let foodNeededHungry = 0;
-    this.selectedCosmonauts.forEach(cosmonaut => {
-      foodNeeded += cosmonaut.foodConsumption * travelTimeHours;
-      const ageOfCosmonaut = this.getAge(cosmonaut.dateOfBirth);
-      if (ageOfCosmonaut <= 40 && ageOfCosmonaut >= 20) {
-        foodNeededHungry += cosmonaut.foodConsumption * travelTimeHours * 0.7;
-      } else {
-        foodNeededHungry += cosmonaut.foodConsumption * travelTimeHours;
-      }
-      console.log('Age of cosmonaut ' + cosmonaut.name + ' is: ' + this.getAge(cosmonaut.dateOfBirth));
-    });
-
-    const foodNeededPercentageHungry = Math.ceil((foodNeededHungry / this.selectedSpacecraft.foodBoxCapacity) * 100);
-    const foodNeededPercentage = Math.ceil((foodNeeded / this.selectedSpacecraft.foodBoxCapacity) * 100);
-
-    if (currentFood < foodNeeded && currentFood > foodNeededHungry) {
-      console.log('Young cosmonauts will starve for max 30% of time');
-      this.foodProblemStarvation = true;
-      this.foodProblemStarvationMessage = 'Young cosmonauts will starve for max 30% of time. Fill up to at least '
-        + foodNeededPercentage + '%.'
-        + 'Current food is: ' + currentFood
-        + ' Food needed for this flight without starvation is: ' + foodNeeded;
-    } else {
-      this.foodProblemStarvationMessage = '';
-      this.foodProblemStarvation = false;
-    }
-    if (currentFood < foodNeededHungry) {
-      console.log('Spacecraft has not enough food');
-      this.foodProblem = true;
-
-      if (foodNeededHungry > this.selectedSpacecraft.foodBoxCapacity) {
-        this.foodProblemMessage = 'Spacecraft has small foodbox for such a long flight. '
-          + 'Current food is: ' + currentFood
-          + ' Food needed for this flight with starvation is: ' + foodNeededHungry;
-
-      } else {
-        this.foodProblemMessage = 'Spacecraft has not enough food. Add food. To at least '
-          + foodNeededPercentageHungry + '% / '
-          + foodNeededPercentage + '%.'
-          + 'Current food is: ' + currentFood
-          + ' Food needed for this flight with starvation is: ' + foodNeededHungry;
-      }
-
-    } else {
-      this.foodProblem = false;
-      this.foodProblemMessage = '';
-    }
-    console.log('Current food is: ' + currentFood);
-    console.log('Food needed for this flight without starvation is: ' + foodNeeded);
-    console.log('Food needed for this flight with starvation is: ' + foodNeededHungry);
-  }
-
 
   onSave(form: NgForm) {
     if (form.invalid) {
@@ -333,23 +339,11 @@ export class SpaceflightCreateComponent implements OnInit {
       // this.store.dispatch(new Create({spaceflight: this.spaceflight}));
       this.changeFoodAndFuel();
       this.saveCosmonauts();
-      this.currentWeightCalculation();
+      this.calculateWeight();
       this.calculateFuel();
       this.calculateFood();
-      this.checkCosmonautsAvailability();
-
-
-      if (this.foodProblem || this.fuelProblem || this.foodProblemStarvation || this.weightProblem) {
-        this.dialog.open(SpaceflightErrorComponent, {
-          data: {
-            message: this.fuelProblemMessage,
-            message2: this.foodProblemMessage,
-            message3: this.foodProblemStarvationMessage,
-            message4: this.weightProblemMessage,
-            message5: this.cosmonautsUnavailabilityMessage
-          }
-        });
-      }
+      this.calculateCosmonautsAvailability();
+      this.checkProblems();
 
     } else {
       // this.store.dispatch(new Update({spaceflight: this.spaceflight}));
