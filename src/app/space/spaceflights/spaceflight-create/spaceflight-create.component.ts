@@ -73,37 +73,30 @@ export class SpaceflightCreateComponent implements OnInit {
           this.store.dispatch(new AllSpaceflightsRequested());
           this.mode = 'Edit';
           this.spaceflightId = paramMap.get('spaceflightId');
-          console.log(this.spaceflightId);
-          // this.spaceflightToEdit$ = this.store.pipe(select(selectSpaceflightById(this.spaceflightId)));
-          // const spaceflightToEdit$ = this.store.pipe(select(selectSpaceflightById('5c708d2db71e173a05896ec9')));
-          const spaceflightToEdit$ = this.store.pipe(select(selectAllSpaceflights));
-          spaceflightToEdit$.subscribe(spaceflights => {
-            console.log('spaceflight ' + spaceflights);
-            const spaceflight = spaceflights[0];
-            this.spaceflight = {
-              _id: spaceflight._id,
-              distance: spaceflight.distance,
-              startTime: spaceflight.startTime,
-              isStarted: false,
-              spacecraftId: undefined,
-              cosmonautsIds: []
-            };
-            if (spaceflight !== undefined) {
+          this.spaceflightToEdit$ = this.store.pipe(select(selectSpaceflightById(this.spaceflightId)));
+          this.spaceflightToEdit$.subscribe((spaceflight: Spaceflight) => {
+            if (spaceflight) {
+              this.spaceflight = {
+                _id: spaceflight._id,
+                distance: spaceflight.distance,
+                startTime: spaceflight.startTime,
+                isStarted: false,
+                spacecraftId: undefined,
+                cosmonautsIds: []
+              };
               this.isLoading = false;
+              const date = new Date(spaceflight.startTime);
+              this.startDate = date.toJSON().split('T')[0];
+
+              this.store.pipe(select(selectSpacecraftById(spaceflight.spacecraftId))).subscribe(spacecraft => {
+                this.selectedSpacecraft = spacecraft;
+                this.arriveTime = this.spaceflight.startTime + (this.spaceflight.distance / this.selectedSpacecraft.speed) * 60 * 60 * 1000;
+              });
+              this.store.pipe(select(selectCosmonautsByIds(spaceflight.cosmonautsIds))).subscribe(cosmonauts => {
+                this.selectedCosmonauts = cosmonauts;
+              });
             }
-            const date = new Date(spaceflight.startTime);
-            this.startDate = date.toJSON().split('T')[0];
-
-            this.store.pipe(select(selectSpacecraftById(spaceflight.spacecraftId))).subscribe(spacecraft => {
-              this.selectedSpacecraft = spacecraft;
-              this.arriveTime = this.spaceflight.startTime + (this.spaceflight.distance / this.selectedSpacecraft.speed) * 60 * 60 * 1000;
-            });
-            this.store.pipe(select(selectCosmonautsByIds(spaceflight.cosmonautsIds))).subscribe(cosmonauts => {
-              this.selectedCosmonauts = cosmonauts;
-            });
-
           });
-
         } else {
           this.spaceflight = {
             _id: 'dummy',
@@ -120,7 +113,6 @@ export class SpaceflightCreateComponent implements OnInit {
         }
       }
     );
-
   }
 
   onSelectChange() {
@@ -133,7 +125,6 @@ export class SpaceflightCreateComponent implements OnInit {
     // console.log('This is before epocha' + this.spaceflight.startTime);
     this.arriveTime = this.spaceflight.startTime + (this.spaceflight.distance / this.selectedSpacecraft.speed) * 60 * 60 * 1000;
   }
-
 
   saveCosmonauts() {
     // console.log(this.selectedCosmonauts);
@@ -292,6 +283,7 @@ export class SpaceflightCreateComponent implements OnInit {
     this.cosmonautUnavailableProblem = false;
     // this.selectedCosmonauts.forEach(cosmonaut => {});
     this.spaceflights$.subscribe((spaceflights: Spaceflight[]) => {
+      // console.log('spaceflights all ' + spaceflights);
       spaceflights.forEach((otherSpaceflight) => {
         if (this.spaceflightId === otherSpaceflight._id) {
           return;
@@ -374,14 +366,6 @@ export class SpaceflightCreateComponent implements OnInit {
     if (form.invalid) {
       return;
     }
-    // this.spaceflight = {
-    //   _id: this.spaceflightId,
-    //   distance: form.value.distance,
-    //   startTime: form.value.startTime,
-    //   isStarted: false,
-    //   spacecraft: undefined,
-    //   cosmonauts: []
-    // };
 
     this.processSpacecraft();
     if (!this.checkProblems()) {
@@ -396,11 +380,5 @@ export class SpaceflightCreateComponent implements OnInit {
     } else {
       console.log('Cannot start problem is there');
     }
-
-
-    // this.spaceflight.spacecraft.food = form.value.food;
-    console.log(this.spaceflight);
-
-    // this.router.navigateByUrl('/');
   }
 }
