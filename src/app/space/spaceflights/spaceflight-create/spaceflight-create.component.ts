@@ -17,7 +17,6 @@ import { selectAllCosmonauts, selectCosmonautsByIds } from '../../cosmonauts/cos
 import * as SpaceCraftActions from '../../spacecrafts/spacecraft.actions';
 import { MatDialog } from '@angular/material';
 import { SpaceflightErrorComponent } from '../spaceflight-error/spaceflight-error.component';
-import { skip } from 'rxjs/operators';
 
 @Component({
   selector: 'app-spaceflight-create',
