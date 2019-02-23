@@ -30,6 +30,12 @@
           </mat-grid-tile>
           <mat-grid-tile>
             <mat-card class="subCard">
+              <mat-card-subtitle>ETA</mat-card-subtitle>
+              <mat-card-content>{{arriveTime | date: 'dd. MM. yyyy'}} (d/m/y)</mat-card-content>
+            </mat-card>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <mat-card class="subCard">
               <mat-card-subtitle>is Started</mat-card-subtitle>
               <mat-card-content>{{spaceflight?.isStarted}}</mat-card-content>
             </mat-card>

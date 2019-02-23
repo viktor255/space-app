@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../../../reducers';
 import { Spaceflight } from '../../models/spaceflight.model';
@@ -20,10 +20,17 @@ export class SpaceflightComponent implements OnInit {
   @Input() spaceflight: Spaceflight;
   public spacecraft$: Observable<Spacecraft>;
   public cosmonauts$: Observable<Cosmonaut[]>;
+  public arriveTime: number;
 
   ngOnInit() {
     this.spacecraft$ = this.store.pipe(select(selectSpacecraftById(this.spaceflight.spacecraftId)));
     this.cosmonauts$ = this.store.pipe(select(selectCosmonautsByIds(this.spaceflight.cosmonautsIds)));
+
+    this.spacecraft$.subscribe((spacecraft) => {
+      this.arriveTime = this.spaceflight.startTime + (this.spaceflight.distance / spacecraft.speed) * 60 * 60 * 1000;
+    });
+
+
   }
 
   constructor(private store: Store<AppState>) {
