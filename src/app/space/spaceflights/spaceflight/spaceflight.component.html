@@ -25,7 +25,7 @@
           <mat-grid-tile>
             <mat-card class="subCard">
               <mat-card-subtitle>Start time</mat-card-subtitle>
-              <mat-card-content>{{spaceflight?.startTime}}</mat-card-content>
+              <mat-card-content>{{spaceflight?.startTime | date: 'dd. MM. yyyy'}}</mat-card-content>
             </mat-card>
           </mat-grid-tile>
           <mat-grid-tile>
@@ -50,7 +50,7 @@
 
       <mat-action-row>
         <button mat-raised-button color="basic" (click)="onDelete()">Delete</button>
-        <!--<a [routerLink]="['/edit-spaceflight/', spaceflight._id]"><button mat-raised-button color="primary">Update</button></a>-->
+        <a [routerLink]="['/edit-spaceflight/', spaceflight._id]"><button mat-raised-button color="primary">Update</button></a>
       </mat-action-row>
 
     </mat-expansion-panel>

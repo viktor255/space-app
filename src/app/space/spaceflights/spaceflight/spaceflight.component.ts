@@ -7,6 +7,7 @@ import { Spacecraft } from '../../models/spacecraft.model';
 import { selectSpacecraftById } from '../../spacecrafts/spacecraft.selectors';
 import { Cosmonaut } from '../../models/cosmonaut.model';
 import { selectCosmonautsByIds } from '../../cosmonauts/cosmonaut.selectors';
+import { Delete } from '../spaceflight.actions';
 
 @Component({
   selector: 'app-spaceflight',
@@ -30,7 +31,7 @@ export class SpaceflightComponent implements OnInit {
 
 
   onDelete() {
-    // this.store.dispatch(new Delete({_id: this.spaceflight._id}));
+    this.store.dispatch(new Delete({_id: this.spaceflight._id}));
   }
 
 }

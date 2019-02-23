@@ -8,7 +8,8 @@
         placeholder="Spacecraft"
         [(ngModel)]="selectedSpacecraft"
         (selectionChange)="onSelectChange()"
-        name="spacecraft">
+        name="spacecraft"
+        required>
         <mat-option *ngFor="let spacecraft of spacecrafts$ | async" [value]="spacecraft">
           {{spacecraft.name}}
         </mat-option>
@@ -20,7 +21,8 @@
         placeholder="Cosmonauts"
         [(ngModel)]="selectedCosmonauts"
         name="cosmonauts"
-        multiple>
+        multiple
+        required>
         <mat-option *ngFor="let cosmonaut of cosmonauts$ | async" [value]="cosmonaut">
           {{cosmonaut.name}}
         </mat-option>
@@ -49,7 +51,7 @@
         (ngModelChange)="onSelectChange()"
         required>
     </mat-form-field>
-    <p>ETA {{arriveTime | date: 'dd. MM. yyyy'}}</p>
+    <p>ETA {{arriveTime | date: 'dd. MM. yyyy'}} (d/m/y)</p>
 
 
     <mat-form-field class="example-full-width" *ngIf="selectedSpacecraft">
@@ -86,11 +88,7 @@
     </div>
 
 
-    <button
-      type="submit"
-      mat-raised-button
-      color="primary"
-    >Save
-    </button>
+    <button type="submit" mat-raised-button color="primary"  [disabled]="!spaceflightForm.form.valid">Save</button>
+
   </form>
 </mat-card>

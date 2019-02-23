@@ -84,6 +84,8 @@ export class AuthEffects {
       ofType<Logout>(AuthActionTypes.LogoutAction),
       tap(() => {
         localStorage.removeItem('user');
+        const message = 'Logged out';
+        this.snackBar.openFromComponent(ConfirmationComponent, {data: {message: message, action: 'Okay'}, duration: 3000});
         this.router.navigateByUrl('/login');
       })
     );
