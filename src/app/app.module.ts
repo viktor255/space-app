@@ -18,6 +18,7 @@ import { AuthInterceptor } from './auth/auth-interceptor';
 import { ErrorInterceptor } from './error-interceptor';
 import { ErrorComponent } from './error/error.component';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
+import { ChatModule } from './chat/chat.module';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { ConfirmationComponent } from './confirmation/confirmation.component';
     SpaceModule,
     AuthModule,
     AngularMaterialModule,
+    ChatModule,
     StoreModule.forRoot(reducers, {metaReducers}),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([AppEffects])

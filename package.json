@@ -34,8 +34,10 @@
     "jsonwebtoken": "^8.4.0",
     "mongoose": "^5.3.13",
     "mongoose-unique-validator": "^2.0.2",
+    "ngx-socket-io": "^2.1.1",
     "nodemailer": "^4.7.0",
     "rxjs": "~6.3.3",
+    "socket.io": "^2.2.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {

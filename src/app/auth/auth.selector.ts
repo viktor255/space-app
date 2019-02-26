@@ -17,3 +17,8 @@ export const tokenSelector = createSelector(
   authState => authState.user ? authState.user.token : undefined
 );
 
+export const emailSelector = createSelector(
+  selectAuthState,
+  authState => authState.user ? authState.user.email : undefined
+);
+

@@ -50,3 +50,47 @@ const server = http.createServer(app);
 server.on("error", onError);
 server.on("listening", onListening);
 server.listen(port);
+
+const io = require('socket.io')(server);
+const chatWindows = {};
+
+io.on("connection", socket => {
+  let previousId;
+  const safeJoin = currentId => {
+    socket.leave(previousId);
+    socket.join(currentId);
+    previousId = currentId;
+  };
+
+  socket.on("getChatWindow", chatWindowId => {
+    safeJoin(chatWindowId);
+    socket.emit("chatWindow", chatWindows[chatWindowId]);
+    console.log('Getting chatWindow');
+    console.log(chatWindows[chatWindowId]);
+  });
+
+  socket.on("addChatWindow", chatWindow => {
+    chatWindows[chatWindow.id] = chatWindow;
+    safeJoin(chatWindow.id);
+    io.emit("chatWindows", Object.keys(chatWindows));
+    socket.emit("chatWindow", chatWindow);
+    console.log('ChatWindow added: ' + chatWindow);
+    console.log(chatWindow);
+  });
+
+  socket.on("newMessage", obj => {
+    chatWindows[obj.chatWindow.id].messages.push(obj.message);
+    socket.emit("chatWindow", chatWindows[obj.chatWindow.id]);
+    console.log('Message added: ' + obj.message);
+    console.log(obj.message);
+    console.log('To the chatWindow: ');
+    console.log(chatWindows[obj.chatWindow.id]);
+  });
+
+  socket.on("editChatWindow", chatWindow => {
+    chatWindows[chatWindow.id] = chatWindow;
+    socket.to(chatWindow.id).emit("chatWindow", chatWindow);
+  });
+
+  io.emit("chatWindows", Object.keys(chatWindows));
+});

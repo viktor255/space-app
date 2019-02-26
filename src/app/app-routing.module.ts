@@ -8,6 +8,7 @@ import { PasswordResetComponent } from './auth/password-reset/password-reset.com
 import { DashboardComponent } from './space/dashboard/dashboard.component';
 import { CosmonautCreateComponent } from './space/cosmonauts/cosmonaut-create/cosmonaut-create.component';
 import { SpaceflightCreateComponent } from './space/spaceflights/spaceflight-create/spaceflight-create.component';
+import { ChatComponent } from './chat/chat.component';
 
 const routes: Routes = [
   {path: '', component: DashboardComponent, canActivate: [AuthGuard]},
@@ -19,6 +20,7 @@ const routes: Routes = [
   {path: 'create-spaceflight', component: SpaceflightCreateComponent, canActivate: [AuthGuard]},
   {path: 'edit-spacecraft/:spacecraftId', component: SpacecraftCreateComponent, canActivate: [AuthGuard]},
   {path: 'edit-spaceflight/:spaceflightId', component: SpaceflightCreateComponent, canActivate: [AuthGuard]},
+  {path: 'chat', component: ChatComponent, canActivate: [AuthGuard]},
   {path: 'edit-cosmonaut/:cosmonautId', component: CosmonautCreateComponent, canActivate: [AuthGuard]}
 ];
 

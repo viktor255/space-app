@@ -22,7 +22,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.newMessage = {
       id: 'dummyId',
-      userId: 'userDrsnak',
+      userId: 'a@a.com',
       message: 'asdf',
       timeStamp: 0,
       photo: undefined

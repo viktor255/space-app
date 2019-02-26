@@ -1,13 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const app = express();
 
 const spacecraftsRoutes = require('./routes/spacecraft');
 const cosmonautsRoutes = require('./routes/cosmonaut');
 const spaceflightsRoutes = require('./routes/spaceflight');
 const userRoutes = require('./routes/user');
-
-const app = express();
 
 mongoose.connect(
   'mongodb+srv://space-app:' +

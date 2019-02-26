@@ -1,8 +1,10 @@
 <div *ngIf="chatWindow?.messages">
-  <app-message
-    [message]="message"
-    *ngFor="let message of chatWindow.messages">
-  </app-message>
+  <mat-card>
+    <app-message
+      [message]="message"
+      *ngFor="let message of chatWindow.messages">
+    </app-message>
+  </mat-card>
 </div>
 
 
