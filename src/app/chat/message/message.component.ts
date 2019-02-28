@@ -32,7 +32,7 @@ export class MessageComponent implements OnInit, OnDestroy {
     if (this.message.userId !== this.userEmail) {
       return 'other';
     }
-    return '';
+    return 'this';
   }
 
 }

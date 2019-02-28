@@ -1,8 +1,8 @@
+<mat-card [ngClass]="calculateClasses()">
 
+  <mat-card-content> <p>{{message.message}}</p> </mat-card-content>
+  <mat-divider *ngIf="userEmail !== message.userId"></mat-divider>
+  <mat-card-footer class="footer" *ngIf="userEmail !== message.userId">{{message.userId}}</mat-card-footer>
 
-  <mat-card [ngClass]="calculateClasses()">
-
-    {{message.message}}
-
-  </mat-card>
+</mat-card>
 
