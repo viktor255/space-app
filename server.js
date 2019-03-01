@@ -81,18 +81,14 @@ io.on("connection", socket => {
 
   socket.on("newMessage", obj => {
     chatWindows[obj.chatWindow.id].messages.push(obj.message);
-    // socket.emit("chatWindow", chatWindows[obj.chatWindow.id]);
-    socket.to(obj.chatWindow.id).emit("chatWindow", chatWindows[obj.chatWindow.id]);
+    io.in(obj.chatWindow.id).emit("chatWindow", chatWindows[obj.chatWindow.id]);
     // console.log('Message added: ' + obj.message);
     // console.log(obj.message);
     // console.log('To the chatWindow: ');
     // console.log(chatWindows[obj.chatWindow.id]);
   });
 
-  // socket.on("editChatWindow", chatWindow => {
-  //   chatWindows[chatWindow.id] = chatWindow;
-  //   socket.to(chatWindow.id).emit("chatWindow", chatWindow);
-  // });
+
 
   io.emit("chatWindows", Object.keys(chatWindows));
 });

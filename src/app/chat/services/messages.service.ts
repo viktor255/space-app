@@ -25,10 +25,6 @@ export class MessagesService {
     });
   }
 
-  editChatWindow(chatWindow: ChatWindow) {
-    this.socket.emit('editChatWindow', chatWindow);
-  }
-
   sendNewMessage(message: Message, chatWindow: ChatWindow) {
     this.socket.emit('newMessage', {
       chatWindow: chatWindow,
