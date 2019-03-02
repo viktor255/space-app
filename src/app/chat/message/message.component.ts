@@ -29,7 +29,7 @@ export class MessageComponent implements OnInit, OnDestroy {
 
   calculateClasses() {
     // console.log(userData);
-    if (this.message.userId !== this.userEmail) {
+    if (this.message.userEmail !== this.userEmail) {
       return 'other';
     }
     return 'this';

@@ -25,24 +25,27 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
     this.newMessage = {
       id: 'dummyId',
-      userId: 'dummy',
+      userEmail: 'dummy',
       message: '',
       timeStamp: 0,
       photo: undefined
     };
+    this._userEmailSub = this.store.pipe(select(emailSelector)).subscribe(email => {
+        this.userEmail = email;
+        this.newMessage.userEmail = email;
+        this.messageService.getChatWindow(email);
+      }
+    );
 
     this.chatWindowSubscription = this.messageService.currentChatWindow$
       .subscribe(chatWindow => {
         this.chatWindow = chatWindow;
         // console.log('currentChat changed');
       });
-    this._userEmailSub = this.store.pipe(select(emailSelector)).subscribe(email => {
-        this.userEmail = email;
-        this.newMessage.userId = email;
-      }
-    );
+
   }
 
   ngOnDestroy() {

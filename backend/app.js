@@ -6,6 +6,7 @@ const app = express();
 const spacecraftsRoutes = require('./routes/spacecraft');
 const cosmonautsRoutes = require('./routes/cosmonaut');
 const spaceflightsRoutes = require('./routes/spaceflight');
+const messagesRoutes = require('./routes/message');
 const userRoutes = require('./routes/user');
 
 mongoose.connect(
@@ -33,6 +34,7 @@ app.use((req, res, next) => {
 app.use('/api/spacecrafts', spacecraftsRoutes);
 app.use('/api/cosmonauts', cosmonautsRoutes);
 app.use('/api/spaceflights', spaceflightsRoutes);
+app.use('/api/messages', messagesRoutes);
 app.use('/api/auth', userRoutes);
 
 module.exports = app;
