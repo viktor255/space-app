@@ -9,5 +9,10 @@ textarea {
   /*border: none;*/
   /*padding: 20px  0  20px  15px;*/
 }
+.example-full-width {
+  width: 80%;
+  margin-left: auto;
+
+}
 
 

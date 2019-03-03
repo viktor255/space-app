@@ -1,46 +1,8 @@
-
 const Message = require('../models/message');
 
 
-exports.getAllMessagesInChat = (req, res, next) => {
-  Message.find({chatId: req.params.chatId}).then(messages => {
-    res.status(200).json({
-      message: 'Messages fetched successfully!',
-      messages: messages
-    });
-  })
-    .catch(err => {
-      res.status(500).json({
-        message: 'Fetching messages failed'
-      });
-    });
-};
-
-exports.createMessage = (req, res, next) => {
-  const message = new Message({
-    userEmail: req.body.userEmail,
-    spaceflightId: req.body.spaceflightId,
-    message: req.body.message,
-    timeStamp: req.body.timeStamp
-  });
-  message.save().then(() => {
-    res.status(201).json({
-      message: message
-    })
-  })
-    .catch(err => {
-      res.status(500).json({
-        message: 'Message was not created'
-      });
-    });
-};
-
-
-module.exports = router;
-
 exports.socketAll = function (server) {
   const io = require('socket.io')(server);
-  const chatWindows = {};
 
   io.on("connection", socket => {
     let previousId;
@@ -51,20 +13,16 @@ exports.socketAll = function (server) {
       previousId = currentId;
     };
 
-    socket.on("getChatWindow", chatWindowId => {
-      safeJoin(chatWindowId);
-      socket.emit("chatWindow", chatWindows[chatWindowId]);
-      // console.log('Getting chatWindow');
-      // console.log(chatWindows[chatWindowId]);
-    });
+    socket.on("getChatWindow", spaceflightId => {
+      safeJoin(spaceflightId);
+      Message.find({spaceflightId: spaceflightId}).then(messages => {
+        const chatWindow = {
+          id: spaceflightId,
+          messages: messages
+        };
+        socket.emit("chatWindow", chatWindow);
+      });
 
-    socket.on("addChatWindow", chatWindow => {
-      chatWindows[chatWindow.id] = chatWindow;
-      safeJoin(chatWindow.id);
-      io.emit("chatWindows", Object.keys(chatWindows));
-      socket.emit("chatWindow", chatWindow);
-      // console.log('ChatWindow added: ' + chatWindow);
-      // console.log(chatWindow);
     });
 
     socket.on("newMessage", obj => {
@@ -75,26 +33,22 @@ exports.socketAll = function (server) {
         timeStamp: obj.message.timeStamp
       });
       message.save().then(() => {
-        io.in(obj.chatWindow.id).emit("chatWindow", chatWindows[obj.chatWindow.id]);
+        Message.find({spaceflightId: obj.message.spaceflightId}).then(messages => {
+          const chatWindow = {
+            id: obj.message.spaceflightId,
+            messages: messages
+          };
+          io.in(obj.message.spaceflightId).emit("chatWindow", chatWindow);
+        }).catch(err => {
+          console.log(err);
+        });
       })
         .catch(err => {
-          res.status(500).json({
-            message: 'Message was not created'
-          });
+          console.log(err);
         });
-
-
-      chatWindows[obj.chatWindow.id].messages.push(obj.message);
-      io.in(obj.chatWindow.id).emit("chatWindow", chatWindows[obj.chatWindow.id]);
-      // console.log('Message added: ' + obj.message);
-      // console.log(obj.message);
-      // console.log('To the chatWindow: ');
-      // console.log(chatWindows[obj.chatWindow.id]);
     });
-
-
-    io.emit("chatWindows", Object.keys(chatWindows));
   });
-}
+};
+
 
 

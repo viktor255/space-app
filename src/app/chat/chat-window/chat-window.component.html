@@ -7,8 +7,24 @@
   </mat-card>
 </div>
 
+<br>
 
-<textarea
-  [(ngModel)]='newMessage.message'>
-</textarea>
-<button type="button" (click)="send()">Send</button>
+<mat-card>
+  <mat-form-field class="example-full-width">
+  <textarea
+    cdkTextareaAutosize
+    matInput
+    placeholder="Write here"
+    (keydown.enter)="send()"
+    [(ngModel)]='newMessage.message'>
+  </textarea>
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="button" (click)="send()">Send</button>
+</mat-card>
+
+
+<!--<textarea-->
+<!--[(ngModel)]='newMessage.message'>-->
+<!--</textarea>-->
+
+<!--<button type="button" (click)="send()">Send</button>-->

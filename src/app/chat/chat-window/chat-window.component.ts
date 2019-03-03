@@ -29,6 +29,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     this.newMessage = {
       id: 'dummyId',
       userEmail: 'dummy',
+      spaceflightId: '5c708d2db71e173a05896ec9',
       message: '',
       timeStamp: 0,
       photo: undefined
@@ -36,9 +37,9 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     this._userEmailSub = this.store.pipe(select(emailSelector)).subscribe(email => {
         this.userEmail = email;
         this.newMessage.userEmail = email;
-        this.messageService.getChatWindow(email);
       }
     );
+    this.messageService.getChatWindow('5c708d2db71e173a05896ec9');
 
     this.chatWindowSubscription = this.messageService.currentChatWindow$
       .subscribe(chatWindow => {
@@ -58,5 +59,6 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     // this.messageService.sendNewMessage(this.newMessage);
     this.newMessage.timeStamp = Date.now();
     this.messageService.sendNewMessage(this.newMessage, this.chatWindow);
+    this.newMessage.message = '';
   }
 }

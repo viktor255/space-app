@@ -1,8 +1,16 @@
 <mat-card [ngClass]="calculateClasses()">
 
-  <mat-card-content> <p>{{message.message}}</p> </mat-card-content>
-  <mat-divider *ngIf="userEmail !== message.userEmail"></mat-divider>
-  <mat-card-footer class="footer" *ngIf="userEmail !== message.userEmail">{{message.userEmail}}</mat-card-footer>
+  <mat-card-content><p>{{message.message}}</p></mat-card-content>
+  <mat-divider></mat-divider>
+  <mat-card-footer class="footer">
+    <div class="footerContainer">
+      <div class="left">
+        <div *ngIf="userEmail !== message.userEmail">{{message.userEmail}}</div>
+      </div>
+      <div class="right">{{message.timeStamp | date: 'HH:mm'}}</div>
+    </div>
+  </mat-card-footer>
+
 
 </mat-card>
 
