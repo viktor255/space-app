@@ -23,12 +23,18 @@ export class SpaceflightComponent implements OnInit {
   public arriveTime: number;
 
   ngOnInit() {
-    this.spacecraft$ = this.store.pipe(select(selectSpacecraftById(this.spaceflight.spacecraftId)));
-    this.cosmonauts$ = this.store.pipe(select(selectCosmonautsByIds(this.spaceflight.cosmonautsIds)));
+    if (this.spaceflight) {
+      console.log(this.spaceflight);
+      this.spacecraft$ = this.store.pipe(select(selectSpacecraftById(this.spaceflight.spacecraftId)));
+      this.cosmonauts$ = this.store.pipe(select(selectCosmonautsByIds(this.spaceflight.cosmonautsIds)));
 
-    this.spacecraft$.subscribe((spacecraft) => {
-      this.arriveTime = this.spaceflight.startTime + (this.spaceflight.distance / spacecraft.speed) * 60 * 60 * 1000;
-    });
+      this.spacecraft$.subscribe((spacecraft) => {
+        console.log('this is vyjabeny spacecraft ' + spacecraft);
+        if (spacecraft) {
+          this.arriveTime = this.spaceflight.startTime + (this.spaceflight.distance / spacecraft.speed) * 60 * 60 * 1000;
+        }
+      });
+    }
 
 
   }

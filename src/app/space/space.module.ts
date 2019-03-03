@@ -28,6 +28,9 @@ import { ErrorComponent } from '../error/error.component';
 import { ConfirmationComponent } from '../confirmation/confirmation.component';
 import { MinDirective } from './directives/minDirective.directive';
 import { MaxDirective } from './directives/maxDirective.directive';
+import { DashboardCosmonautComponent } from './dashboard-cosmonaut/dashboard-cosmonaut.component';
+import { SpaceflightListCosmonautComponent } from './spaceflights/spaceflight-list-cosmonaut/spaceflight-list-cosmonaut.component';
+import { DashboardOperatorComponent } from './dashboard-operator/dashboard-operator.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +46,10 @@ import { MaxDirective } from './directives/maxDirective.directive';
     SpaceflightCreateComponent,
     SpaceflightErrorComponent,
     MinDirective,
-    MaxDirective
+    MaxDirective,
+    DashboardCosmonautComponent,
+    SpaceflightListCosmonautComponent,
+    DashboardOperatorComponent
   ],
   imports: [
     BrowserModule,

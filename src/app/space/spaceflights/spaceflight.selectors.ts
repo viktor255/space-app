@@ -14,6 +14,11 @@ export const selectAllSpaceflights = createSelector(
   fromSpaceflight.selectAll
 );
 
+export const selectCosmonautsSpaceflights = (cosmonautId: string) => createSelector(
+  selectAllSpaceflights,
+  spaceflights => spaceflights.filter(spaceflight => spaceflight.cosmonautsIds.includes(cosmonautId))
+);
+
 export const allSpaceflightsLoaded = createSelector(
   selectSpaceflightState,
   spaceflightState => spaceflightState.allSpaceflightsLoaded

@@ -24,3 +24,8 @@ export const selectCosmonautsByIds = (cosmonautsIds: string[]) => createSelector
   selectAllCosmonauts,
   allCosmonauts => allCosmonauts.filter((cosmonaut: Cosmonaut) => cosmonautsIds.includes(cosmonaut._id))
 );
+
+export const selectCosmonautByEmail = (cosmonautEmail: string) => createSelector(
+  selectAllCosmonauts,
+  allCosmonauts => allCosmonauts.find((cosmonaut: Cosmonaut) => cosmonaut.email === cosmonautEmail )
+);

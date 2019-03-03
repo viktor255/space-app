@@ -1,5 +1,9 @@
-<app-spacecraft-list></app-spacecraft-list>
-<br>
-<app-cosmonaut-list></app-cosmonaut-list>
-<br>
-<app-spaceflight-list></app-spaceflight-list>
+<app-dashboard-operator
+  *ngIf="role === 'operator'">
+</app-dashboard-operator>
+
+<app-dashboard-cosmonaut
+  *ngIf="role === 'cosmonaut'">
+</app-dashboard-cosmonaut>
+
+<!--*ngIf="let role of role$ === 'operator' | async">-->

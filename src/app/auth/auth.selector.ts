@@ -22,3 +22,8 @@ export const emailSelector = createSelector(
   authState => authState.user ? authState.user.email : undefined
 );
 
+export const roleSelector = createSelector(
+  selectAuthState,
+  authState => authState.user ? authState.user.role : undefined
+);
+
