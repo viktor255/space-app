@@ -6,6 +6,14 @@ import { ChatWindow } from '../models/chatWindow.model';
 import { select, Store } from '@ngrx/store';
 import { emailSelector } from '../../auth/auth.selector';
 import { AppState } from '../../reducers';
+import { AllSpaceflightsRequested } from '../../space/spaceflights/spaceflight.actions';
+import { AllCosmonautsRequested } from '../../space/cosmonauts/cosmonaut.actions';
+import { selectCosmonautByEmail } from '../../space/cosmonauts/cosmonaut.selectors';
+import { Cosmonaut } from '../../space/models/cosmonaut.model';
+import { selectCosmonautsSpaceflights } from '../../space/spaceflights/spaceflight.selectors';
+import { Spaceflight } from '../../space/models/spaceflight.model';
+import { selectSpacecraftById } from '../../space/spacecrafts/spacecraft.selectors';
+import { AllSpacecraftsRequested } from '../../space/spacecrafts/spacecraft.actions';
 
 @Component({
   selector: 'app-chat-window',
@@ -19,17 +27,25 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
 
   private chatWindowSubscription: Subscription;
   private _userEmailSub: Subscription;
+  private _spaceflightsSub: Subscription;
   private userEmail: string;
+
+  private currentSpaceflight: Spaceflight;
 
   constructor(private messageService: MessagesService, private store: Store<AppState>) {
   }
 
   ngOnInit() {
 
+    this.store.dispatch(new AllSpaceflightsRequested());
+    this.store.dispatch(new AllCosmonautsRequested());
+    this.store.dispatch(new AllSpacecraftsRequested());
+
+
     this.newMessage = {
       id: 'dummyId',
       userEmail: 'dummy',
-      spaceflightId: '5c708d2db71e173a05896ec9',
+      spaceflightId: '',
       message: '',
       timeStamp: 0,
       photo: undefined
@@ -37,9 +53,32 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     this._userEmailSub = this.store.pipe(select(emailSelector)).subscribe(email => {
         this.userEmail = email;
         this.newMessage.userEmail = email;
+
+        console.log('Email is: ' + email);
+        this.store.pipe(select(selectCosmonautByEmail(email))).subscribe((cosmonaut: Cosmonaut) => {
+          console.log(cosmonaut);
+          if (cosmonaut) {
+            this.store.pipe(select(selectCosmonautsSpaceflights(cosmonaut._id)))
+              .subscribe((spaceflights: Spaceflight[]) => {
+                  spaceflights.forEach(spaceflight => {
+                    this.store.pipe(select(selectSpacecraftById(spaceflight.spacecraftId))).subscribe(spacecraft => {
+                      const arriveTime = spaceflight.startTime + (spaceflight.distance / spacecraft.speed) * 60 * 60 * 1000;
+                      if (spaceflight.startTime < Date.now() && arriveTime > Date.now()) {
+                        this.currentSpaceflight = spaceflight;
+                        this.newMessage.spaceflightId = spaceflight._id;
+                        this.messageService.getChatWindow(spaceflight._id);
+                      }
+                    }).unsubscribe();
+
+                  });
+                }
+              ).unsubscribe();
+          }
+
+        }).unsubscribe();
+        // conso
       }
     );
-    this.messageService.getChatWindow('5c708d2db71e173a05896ec9');
 
     this.chatWindowSubscription = this.messageService.currentChatWindow$
       .subscribe(chatWindow => {
@@ -52,6 +91,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.chatWindowSubscription.unsubscribe();
     this._userEmailSub.unsubscribe();
+    // this._spaceflightsSub.unsubscribe();
   }
 
   send() {

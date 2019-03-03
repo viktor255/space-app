@@ -1,6 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 import * as fromSpaceflight from '../reducers/spaceflights.reducer';
+import { Spaceflight } from '../models/spaceflight.model';
 
 export const selectSpaceflightState = createFeatureSelector<fromSpaceflight.SpaceflightState>('spaceflightState');
 

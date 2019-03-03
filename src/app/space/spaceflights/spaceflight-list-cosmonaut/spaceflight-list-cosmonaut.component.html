@@ -2,10 +2,10 @@
   <mat-card-title>Spaceflights</mat-card-title>
   <div *ngIf="spaceflights$ | async as spaceflights">
     <div *ngIf=spaceflights>
-      <app-spaceflight
+      <app-spaceflight-cosmonaut
         [spaceflight]="spaceflight"
         *ngFor="let spaceflight of spaceflights">
-      </app-spaceflight>
+      </app-spaceflight-cosmonaut>
     </div>
 
   </div>

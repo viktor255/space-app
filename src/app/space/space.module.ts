@@ -31,6 +31,7 @@ import { MaxDirective } from './directives/maxDirective.directive';
 import { DashboardCosmonautComponent } from './dashboard-cosmonaut/dashboard-cosmonaut.component';
 import { SpaceflightListCosmonautComponent } from './spaceflights/spaceflight-list-cosmonaut/spaceflight-list-cosmonaut.component';
 import { DashboardOperatorComponent } from './dashboard-operator/dashboard-operator.component';
+import { SpaceflightCosmonautComponent } from './spaceflights/spaceflight-cosmonaut/spaceflight-cosmonaut.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { DashboardOperatorComponent } from './dashboard-operator/dashboard-opera
     MaxDirective,
     DashboardCosmonautComponent,
     SpaceflightListCosmonautComponent,
-    DashboardOperatorComponent
+    DashboardOperatorComponent,
+    SpaceflightCosmonautComponent
   ],
   imports: [
     BrowserModule,
