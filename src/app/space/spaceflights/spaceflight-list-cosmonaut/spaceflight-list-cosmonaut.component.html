@@ -1,0 +1,14 @@
+<mat-card style="width: min-content">
+  <mat-card-title>Spaceflights</mat-card-title>
+  <div *ngIf="spaceflights$ | async as spaceflights">
+    <div *ngIf=spaceflights>
+      <app-spaceflight
+        [spaceflight]="spaceflight"
+        *ngFor="let spaceflight of spaceflights">
+      </app-spaceflight>
+    </div>
+
+  </div>
+
+
+</mat-card>

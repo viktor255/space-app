@@ -8,6 +8,8 @@ import { selectSpacecraftById } from '../../spacecrafts/spacecraft.selectors';
 import { Cosmonaut } from '../../models/cosmonaut.model';
 import { selectCosmonautsByIds } from '../../cosmonauts/cosmonaut.selectors';
 import { Delete } from '../spaceflight.actions';
+import { AllCosmonautsRequested } from '../../cosmonauts/cosmonaut.actions';
+import { AllSpacecraftsRequested } from '../../spacecrafts/spacecraft.actions';
 
 @Component({
   selector: 'app-spaceflight',
@@ -24,12 +26,12 @@ export class SpaceflightComponent implements OnInit {
 
   ngOnInit() {
     if (this.spaceflight) {
-      console.log(this.spaceflight);
+      this.store.dispatch(new AllCosmonautsRequested());
+      this.store.dispatch(new AllSpacecraftsRequested());
       this.spacecraft$ = this.store.pipe(select(selectSpacecraftById(this.spaceflight.spacecraftId)));
       this.cosmonauts$ = this.store.pipe(select(selectCosmonautsByIds(this.spaceflight.cosmonautsIds)));
 
       this.spacecraft$.subscribe((spacecraft) => {
-        console.log('this is vyjabeny spacecraft ' + spacecraft);
         if (spacecraft) {
           this.arriveTime = this.spaceflight.startTime + (this.spaceflight.distance / spacecraft.speed) * 60 * 60 * 1000;
         }
