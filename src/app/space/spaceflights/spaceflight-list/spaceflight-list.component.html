@@ -1,8 +1,23 @@
-<mat-card style="width: min-content">
-  <mat-card-title>Spaceflights</mat-card-title>
+<mat-card style="width: min-content" *ngIf="currentSpaceflights?.length > 0">
+  <mat-card-title>Current Spaceflights</mat-card-title>
+  <app-spaceflight-live
+    [spaceflight]="spaceflight"
+    *ngFor="let spaceflight of currentSpaceflights" >
+  </app-spaceflight-live>
+</mat-card>
+
+<mat-card style="width: min-content" *ngIf="plannedSpaceflights?.length > 0">
+  <mat-card-title>Planned Spaceflights</mat-card-title>
   <app-spaceflight
     [spaceflight]="spaceflight"
-    *ngFor="let spaceflight of spaceflights$ | async" >
+    *ngFor="let spaceflight of plannedSpaceflights" >
   </app-spaceflight>
+</mat-card>
 
+<mat-card style="width: min-content" *ngIf="finishedSpaceflights?.length > 0">
+  <mat-card-title>Finished Spaceflights</mat-card-title>
+  <app-spaceflight
+    [spaceflight]="spaceflight"
+    *ngFor="let spaceflight of finishedSpaceflights" >
+  </app-spaceflight>
 </mat-card>

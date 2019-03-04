@@ -32,6 +32,7 @@ import { DashboardCosmonautComponent } from './dashboard-cosmonaut/dashboard-cos
 import { SpaceflightListCosmonautComponent } from './spaceflights/spaceflight-list-cosmonaut/spaceflight-list-cosmonaut.component';
 import { DashboardOperatorComponent } from './dashboard-operator/dashboard-operator.component';
 import { SpaceflightCosmonautComponent } from './spaceflights/spaceflight-cosmonaut/spaceflight-cosmonaut.component';
+import { SpaceflightLiveComponent } from './spaceflights/spaceflight-live/spaceflight-live.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { SpaceflightCosmonautComponent } from './spaceflights/spaceflight-cosmon
     DashboardCosmonautComponent,
     SpaceflightListCosmonautComponent,
     DashboardOperatorComponent,
-    SpaceflightCosmonautComponent
+    SpaceflightCosmonautComponent,
+    SpaceflightLiveComponent
   ],
   imports: [
     BrowserModule,

@@ -1,14 +1,16 @@
 <mat-card style="width: min-content">
-  <mat-card-title>Spaceflights</mat-card-title>
-  <div *ngIf="spaceflights$ | async as spaceflights">
-    <div *ngIf=spaceflights>
-      <app-spaceflight-cosmonaut
-        [spaceflight]="spaceflight"
-        *ngFor="let spaceflight of spaceflights">
-      </app-spaceflight-cosmonaut>
-    </div>
-
+  <mat-card-title>Current Spaceflight</mat-card-title>
+  <div *ngIf="currentSpaceflight">
+    <app-spaceflight-live [spaceflight]="currentSpaceflight"></app-spaceflight-live>
   </div>
-
-
 </mat-card>
+
+
+<mat-card style="width: min-content" *ngIf="spaceflights?.length > 0">
+  <mat-card-title>Other Spaceflights</mat-card-title>
+  <app-spaceflight-cosmonaut
+    [spaceflight]="spaceflight"
+    *ngFor="let spaceflight of spaceflights">
+  </app-spaceflight-cosmonaut>
+</mat-card>
+
