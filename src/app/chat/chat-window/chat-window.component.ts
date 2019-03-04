@@ -14,6 +14,7 @@ import { selectCosmonautsSpaceflights } from '../../space/spaceflights/spaceflig
 import { Spaceflight } from '../../space/models/spaceflight.model';
 import { selectSpacecraftById } from '../../space/spacecrafts/spacecraft.selectors';
 import { AllSpacecraftsRequested } from '../../space/spacecrafts/spacecraft.actions';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chat-window',
@@ -27,6 +28,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
 
   private chatWindowSubscription: Subscription;
   private _userEmailSub: Subscription;
+  private _cosmonautSub: Subscription;
   private _spaceflightsSub: Subscription;
   private userEmail: string;
 
@@ -41,7 +43,6 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     this.store.dispatch(new AllCosmonautsRequested());
     this.store.dispatch(new AllSpacecraftsRequested());
 
-
     this.newMessage = {
       id: 'dummyId',
       userEmail: 'dummy',
@@ -50,33 +51,34 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
       timeStamp: 0,
       photo: undefined
     };
+
     this._userEmailSub = this.store.pipe(select(emailSelector)).subscribe(email => {
         this.userEmail = email;
         this.newMessage.userEmail = email;
 
         console.log('Email is: ' + email);
-        this.store.pipe(select(selectCosmonautByEmail(email))).subscribe((cosmonaut: Cosmonaut) => {
+        this._cosmonautSub = this.store.pipe(select(selectCosmonautByEmail(email))).subscribe((cosmonaut: Cosmonaut) => {
           console.log(cosmonaut);
           if (cosmonaut) {
-            this.store.pipe(select(selectCosmonautsSpaceflights(cosmonaut._id)))
+            this._spaceflightsSub = this.store.pipe(select(selectCosmonautsSpaceflights(cosmonaut._id)))
               .subscribe((spaceflights: Spaceflight[]) => {
                   spaceflights.forEach(spaceflight => {
-                    this.store.pipe(select(selectSpacecraftById(spaceflight.spacecraftId))).subscribe(spacecraft => {
-                      const arriveTime = spaceflight.startTime + (spaceflight.distance / spacecraft.speed) * 60 * 60 * 1000;
-                      if (spaceflight.startTime < Date.now() && arriveTime > Date.now()) {
-                        this.currentSpaceflight = spaceflight;
-                        this.newMessage.spaceflightId = spaceflight._id;
-                        this.messageService.getChatWindow(spaceflight._id);
+                    this.store.pipe(select(selectSpacecraftById(spaceflight.spacecraftId))).pipe(take(2)).subscribe(spacecraft => {
+                      if (spacecraft) {
+                        const arriveTime = spaceflight.startTime + (spaceflight.distance / spacecraft.speed) * 60 * 60 * 1000;
+                        if (spaceflight.startTime < Date.now() && arriveTime > Date.now()) {
+                          console.log('current spaceflight found');
+                          this.currentSpaceflight = spaceflight;
+                          this.newMessage.spaceflightId = spaceflight._id;
+                          this.messageService.getChatWindow(spaceflight._id);
+                        }
                       }
-                    }).unsubscribe();
-
+                    });
                   });
                 }
-              ).unsubscribe();
+              );
           }
-
-        }).unsubscribe();
-        // conso
+        });
       }
     );
 
@@ -91,7 +93,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.chatWindowSubscription.unsubscribe();
     this._userEmailSub.unsubscribe();
-    // this._spaceflightsSub.unsubscribe();
+    this._cosmonautSub.unsubscribe();
+    this._spaceflightsSub.unsubscribe();
   }
 
   send() {

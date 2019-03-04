@@ -79,10 +79,20 @@ exports.loginUser = (req, res, next) => {
       if (!fetchedUser.isVerified) {
         return res.status(401).json({message: 'User is not verified'});
       }
-      const token = jwt.sign({
-        email: fetchedUser.email,
-        userId: fetchedUser._id
-      }, process.env.JWT_KEY, {expiresIn: '1h'});
+
+      let token;
+      if(fetchedUser.role === 'operator') {
+        token = jwt.sign({
+          email: fetchedUser.email,
+          userId: fetchedUser._id
+        }, process.env.JWT_KEY_OPERATOR, {expiresIn: '1h'});
+      } else {
+        token = jwt.sign({
+          email: fetchedUser.email,
+          userId: fetchedUser._id
+        }, process.env.JWT_KEY, {expiresIn: '1h'});
+      }
+
       // console.log(fetchedUser);
       res.status(200).json({
         user: {

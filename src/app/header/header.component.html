@@ -6,9 +6,9 @@
            routerLinkActive="mat-accent "
            [routerLinkActiveOptions]="{exact:true}">Dashboard</a></span>
   <span><a mat-button *ngIf="role === 'cosmonaut'" routerLink="/chat" routerLinkActive="mat-accent">Chat</a></span>
-  <span><a mat-button *ngIf="isLoggedIn$ | async" routerLink="/create-spacecraft" routerLinkActive="mat-accent">Create Spacecraft</a></span>
-  <span><a mat-button *ngIf="isLoggedIn$ | async" routerLink="/create-cosmonaut" routerLinkActive="mat-accent">Create Cosmonaut</a></span>
-  <span><a mat-button *ngIf="isLoggedIn$ | async" routerLink="/create-spaceflight" routerLinkActive="mat-accent">Create Spaceflight</a></span>
+  <span><a mat-button *ngIf="role === 'operator'" routerLink="/create-spacecraft" routerLinkActive="mat-accent">Create Spacecraft</a></span>
+  <span><a mat-button *ngIf="role === 'operator'" routerLink="/create-cosmonaut" routerLinkActive="mat-accent">Create Cosmonaut</a></span>
+  <span><a mat-button *ngIf="role === 'operator'" routerLink="/create-spaceflight" routerLinkActive="mat-accent">Create Spaceflight</a></span>
   <span><a mat-button *ngIf="!(isLoggedIn$ | async)" routerLink="/login" routerLinkActive="mat-accent">Login</a></span>
   <span><a mat-button *ngIf="!(isLoggedIn$ | async)" routerLink="/signup" routerLinkActive="mat-accent">Sign up</a></span>
   <span><a mat-button *ngIf="isLoggedIn$ | async" (click)="onLogout()">Logout</a></span>
