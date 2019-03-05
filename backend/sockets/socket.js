@@ -1,4 +1,5 @@
 const Message = require('../models/message');
+const Spaceflight = require('../models/spaceflight');
 
 
 exports.socketAll = function (server) {
@@ -12,6 +13,31 @@ exports.socketAll = function (server) {
       socket.join(currentId);
       previousId = currentId;
     };
+
+    socket.on("destroySpaceflight", spaceflightId => {
+      Spaceflight.deleteOne({_id: spaceflightId})
+        .then(result => {
+          if (result.n > 0) {
+            io.in(spaceflightId).emit("spaceflightDestroyed", spaceflightId);
+          } else {
+            console.log(result);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+    socket.on("destroySpaceflightRequest", spaceflightId => {
+      // safeJoin(spaceflightId);
+      io.in(spaceflightId).emit("spaceflightDestructionStarted", spaceflightId);
+    });
+
+    socket.on("joinSpaceflight",  spaceflightId => {
+      safeJoin(spaceflightId);
+    });
+    socket.on("leaveSpaceflight",  spaceflightId => {
+      socket.leave(spaceflightId);
+    });
 
     socket.on("getChatWindow", spaceflightId => {
       safeJoin(spaceflightId);

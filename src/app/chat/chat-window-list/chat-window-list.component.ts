@@ -29,6 +29,6 @@ export class ChatWindowListComponent implements OnInit, OnDestroy {
   }
 
   newChatWindow() {
-    this.messagesService.newChatWindow();
+    // this.messagesService.newChatWindow();
   }
 }

@@ -51,4 +51,4 @@ server.on("error", onError);
 server.on("listening", onListening);
 server.listen(port);
 
-require('./backend/sockets/chat').socketAll(server);
+require('./backend/sockets/socket').socketAll(server);

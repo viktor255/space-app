@@ -1,0 +1,11 @@
+.main{
+  background: #f92100;
+}
+
+.timer {
+  text-align: center;
+}
+
+.custom-dialog-container .mat-dialog-container {
+  background: #f92100;
+}

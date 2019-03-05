@@ -33,6 +33,7 @@ import { SpaceflightListCosmonautComponent } from './spaceflights/spaceflight-li
 import { DashboardOperatorComponent } from './dashboard-operator/dashboard-operator.component';
 import { SpaceflightCosmonautComponent } from './spaceflights/spaceflight-cosmonaut/spaceflight-cosmonaut.component';
 import { SpaceflightLiveComponent } from './spaceflights/spaceflight-live/spaceflight-live.component';
+import { DestructionWarningComponent } from './destruction-warning/destruction-warning.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { SpaceflightLiveComponent } from './spaceflights/spaceflight-live/spacef
     SpaceflightListCosmonautComponent,
     DashboardOperatorComponent,
     SpaceflightCosmonautComponent,
-    SpaceflightLiveComponent
+    SpaceflightLiveComponent,
+    DestructionWarningComponent
   ],
   imports: [
     BrowserModule,
@@ -78,6 +80,6 @@ import { SpaceflightLiveComponent } from './spaceflights/spaceflight-live/spacef
     SpaceflightCreateComponent,
     DashboardComponent
   ],
-  entryComponents: [SpaceflightErrorComponent]
+  entryComponents: [SpaceflightErrorComponent, DestructionWarningComponent]
 })
 export class SpaceModule {}

@@ -11,6 +11,7 @@ import { selectCosmonautsByIds } from '../../cosmonauts/cosmonaut.selectors';
 import { AppState } from '../../../reducers';
 import { Delete } from '../spaceflight.actions';
 import { take } from 'rxjs/operators';
+import { SpaceflightsService } from '../services/spaceflights.service';
 
 @Component({
   selector: 'app-spaceflight-live',
@@ -41,10 +42,14 @@ export class SpaceflightLiveComponent implements OnInit, OnDestroy {
   private _cosmonautsSub: Subscription;
   private _timerSub: Subscription;
 
+  constructor(private store: Store<AppState>, private spaceflightsService: SpaceflightsService) {
+  }
+
   ngOnInit() {
     if (this.spaceflight) {
       this.store.dispatch(new AllCosmonautsRequested());
       this.store.dispatch(new AllSpacecraftsRequested());
+      this.spaceflightsService.joinSpaceflightSocket(this.spaceflight._id);
       this.spacecraft$ = this.store.pipe(select(selectSpacecraftById(this.spaceflight.spacecraftId)));
       this.cosmonauts$ = this.store.pipe(select(selectCosmonautsByIds(this.spaceflight.cosmonautsIds)));
 
@@ -60,8 +65,7 @@ export class SpaceflightLiveComponent implements OnInit, OnDestroy {
     this._timerSub = timer(0, 1000).subscribe(() => this.everySecond());
   }
 
-  constructor(private store: Store<AppState>) {
-  }
+
 
   everySecond() {
     if (this.spacecraft && this.cosmonauts) {
@@ -114,12 +118,14 @@ export class SpaceflightLiveComponent implements OnInit, OnDestroy {
   onDelete() {
     // this.store.dispatch(new Delete({_id: this.spaceflight._id}));
     console.log('Autodestruction started');
+    this.spaceflightsService.destroySpaceflightRequest(this.spaceflight._id);
   }
 
   ngOnDestroy() {
     this._spacecraftSub.unsubscribe();
     this._cosmonautsSub.unsubscribe();
     this._timerSub.unsubscribe();
+    this.spaceflightsService.leaveSpaceflightSocket(this.spaceflight._id);
   }
 
 }

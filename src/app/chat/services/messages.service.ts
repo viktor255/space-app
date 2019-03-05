@@ -18,29 +18,12 @@ export class MessagesService {
     this.socket.emit('getChatWindow', id);
   }
 
-  newChatWindow() {
-    this.socket.emit('addChatWindow', {
-      id: this.generateChatWindowId(),
-      messages: [],
-    });
-  }
 
   sendNewMessage(message: Message, chatWindow: ChatWindow) {
     this.socket.emit('newMessage', {
       chatWindow: chatWindow,
       message: message
     });
-  }
-
-  private generateChatWindowId() {
-    let text = '';
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (let i = 0; i < 5; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-
-    return text;
   }
 
 

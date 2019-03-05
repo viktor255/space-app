@@ -6,6 +6,8 @@ export enum SpaceflightActionTypes {
   CreateActionSuccessful = '[Spaceflight API] Spaceflight created successfully',
   DeleteAction = '[Spaceflight] Delete spaceflight action',
   DeleteActionSuccessful = '[Spaceflight API] Spaceflight deleted successfully',
+  DestroyActionSuccessful = '[Spaceflight API] Spaceflight destroyed ',
+  DestroyActionRequest = '[Spaceflight live] Spaceflight destroy request',
   UpdateAction = '[Spaceflight] Update spaceflight action',
   UpdateActionSuccessful = '[Spaceflight API] Spaceflight updated successfully',
   AllSpaceflightsRequested = '[Spaceflight-list] All spaceflights requested',
@@ -36,6 +38,20 @@ export class Delete implements Action {
 
 export class DeleteSuccessful implements Action {
   readonly type = SpaceflightActionTypes.DeleteActionSuccessful;
+
+  constructor(public readonly payload: { _id: string }) {
+  }
+}
+
+export class DestroySuccessful implements Action {
+  readonly type = SpaceflightActionTypes.DestroyActionSuccessful;
+
+  constructor(public readonly payload: { _id: string }) {
+  }
+}
+
+export class DestroyRequest implements Action {
+  readonly type = SpaceflightActionTypes.DestroyActionRequest;
 
   constructor(public readonly payload: { _id: string }) {
   }
@@ -82,4 +98,6 @@ export type SpaceflightActions =
   | CreateSuccessful
   | DeleteSuccessful
   | UpdateSuccessful
+  | DestroyRequest
+  | DeleteSuccessful
   | BackendError;

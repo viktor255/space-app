@@ -11,21 +11,26 @@ import {
   AllSpaceflightsLoaded,
   AllSpaceflightsRequested,
   BackendError, Create,
-  CreateSuccessful, Delete, DeleteSuccessful,
+  CreateSuccessful, Delete, DeleteSuccessful, DestroyRequest, DestroySuccessful,
   SpaceflightActionTypes, Update, UpdateSuccessful
 } from './spaceflight.actions';
 import { Spaceflight } from '../models/spaceflight.model';
 import { allSpaceflightsLoaded } from './spaceflight.selectors';
 import { ConfirmationComponent } from '../../confirmation/confirmation.component';
-import { MatSnackBar } from '@angular/material';
-import { Spacecraft } from '../models/spacecraft.model';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { DestructionWarningComponent } from '../destruction-warning/destruction-warning.component';
 
 const BACKEND_URL = environment.apiUrl + '/spaceflights/';
 
 @Injectable()
 export class SpaceflightEffects {
 
-  constructor(private actions$: Actions, private httpClient: HttpClient, private store: Store<AppState>, private snackBar: MatSnackBar) {
+  constructor(
+    private actions$: Actions,
+    private httpClient: HttpClient,
+    private store: Store<AppState>,
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog) {
   }
 
   @Effect()
@@ -91,6 +96,24 @@ export class SpaceflightEffects {
       ofType<DeleteSuccessful>(SpaceflightActionTypes.DeleteActionSuccessful),
       tap((action) => {
         const message = 'Spaceflight deleted';
+        this.snackBar.openFromComponent(ConfirmationComponent, {data: {message: message, action: 'Okay'}, duration: 3000});
+      })
+    );
+
+  @Effect({dispatch: false})
+  destroySpaceflightRequest$ = this.actions$
+    .pipe(
+      ofType<DestroyRequest>(SpaceflightActionTypes.DestroyActionRequest),
+      tap((action) => {
+        this.dialog.open(DestructionWarningComponent, {data: {spaceflightId: action.payload._id}, panelClass: 'custom-dialog-container'});
+      })
+    );
+  @Effect({dispatch: false})
+  destroySpaceflightSuccesfull$ = this.actions$
+    .pipe(
+      ofType<DestroySuccessful>(SpaceflightActionTypes.DestroyActionSuccessful),
+      tap((action) => {
+        const message = 'Spaceflight destroyed';
         this.snackBar.openFromComponent(ConfirmationComponent, {data: {message: message, action: 'Okay'}, duration: 3000});
       })
     );

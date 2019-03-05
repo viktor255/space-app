@@ -10,6 +10,7 @@ import { selectSpacecraftById } from '../../spacecrafts/spacecraft.selectors';
 import { selectCosmonautsByIds } from '../../cosmonauts/cosmonaut.selectors';
 import { AppState } from '../../../reducers';
 import { Delete } from '../spaceflight.actions';
+import { SpaceflightsService } from '../services/spaceflights.service';
 
 @Component({
   selector: 'app-spaceflight-cosmonaut',
@@ -40,7 +41,7 @@ export class SpaceflightCosmonautComponent implements OnInit {
 
   }
 
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>, private spaceflightsService: SpaceflightsService) {
   }
 
 
