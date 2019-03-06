@@ -1,4 +1,4 @@
-const app = require("./backend/app");
+const app = require("./app");
 const debug = require("debug")("node-angular");
 const http = require("http");
 
@@ -51,4 +51,4 @@ server.on("error", onError);
 server.on("listening", onListening);
 server.listen(port);
 
-require('./backend/sockets/socket').socketAll(server);
+require('./sockets/socket').socketAll(server);
