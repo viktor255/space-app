@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -16,6 +17,7 @@ mongoose.connect(
   .catch(e => console.log('Connection failed', e));
 
 app.use(bodyParser.json());
+app.use('/', express.static(path.join(__dirname, 'angular')));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -34,5 +36,8 @@ app.use('/api/spacecrafts', spacecraftsRoutes);
 app.use('/api/cosmonauts', cosmonautsRoutes);
 app.use('/api/spaceflights', spaceflightsRoutes);
 app.use('/api/auth', userRoutes);
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, 'angular', 'index.html'));
+});
 
 module.exports = app;
