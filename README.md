@@ -21,3 +21,4 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 1. `npm install`
 2. `ng build` or `ng build --prod`
 3. `npm run start:server`
+4. Navigate to `http://localhost:3000/`
