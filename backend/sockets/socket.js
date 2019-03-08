@@ -28,6 +28,7 @@ exports.socketAll = function (server) {
         });
     });
     socket.on("destroySpaceflightRequest", spaceflightId => {
+      safeJoin(spaceflightId);
       io.in(spaceflightId).emit("spaceflightDestructionStarted", spaceflightId);
     });
 
