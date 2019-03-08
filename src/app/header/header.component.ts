@@ -5,7 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { isLoggedIn, roleSelector } from '../auth/auth.selector';
 import { Logout } from '../auth/auth.actions';
 import { SpaceflightsService } from '../space/spaceflights/services/spaceflights.service';
-import { AllSpaceflightsRequested, DestroyRequest } from '../space/spaceflights/spaceflight.actions';
+import { DestroyRequest } from '../space/spaceflights/spaceflight.actions';
 
 @Component({
   selector: 'app-header',

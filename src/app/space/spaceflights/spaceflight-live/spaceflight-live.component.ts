@@ -9,8 +9,6 @@ import { select, Store } from '@ngrx/store';
 import { selectSpacecraftById } from '../../spacecrafts/spacecraft.selectors';
 import { selectCosmonautsByIds } from '../../cosmonauts/cosmonaut.selectors';
 import { AppState } from '../../../reducers';
-import { Delete } from '../spaceflight.actions';
-import { take } from 'rxjs/operators';
 import { SpaceflightsService } from '../services/spaceflights.service';
 
 @Component({
@@ -66,7 +64,6 @@ export class SpaceflightLiveComponent implements OnInit, OnDestroy {
   }
 
 
-
   everySecond() {
     if (this.spacecraft && this.cosmonauts) {
       this.arriveTime = this.spaceflight.startTime + (this.spaceflight.distance / this.spacecraft.speed) * 60 * 60 * 1000;
@@ -116,8 +113,6 @@ export class SpaceflightLiveComponent implements OnInit, OnDestroy {
 
 
   onDelete() {
-    // this.store.dispatch(new Delete({_id: this.spaceflight._id}));
-    console.log('Autodestruction started');
     this.spaceflightsService.destroySpaceflightRequest(this.spaceflight._id);
   }
 

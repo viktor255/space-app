@@ -17,7 +17,6 @@ export class LoginComponent {
   }
 
   onLogin(form: NgForm) {
-    console.log(form.value);
     const authData: AuthData = {
       email: form.value.email,
       password: form.value.password
@@ -27,7 +26,6 @@ export class LoginComponent {
   }
 
   onResendToken(form: NgForm) {
-    console.log(form.value);
     const authData: AuthData = {
       email: form.value.email,
       password: 'dummy'
@@ -37,8 +35,6 @@ export class LoginComponent {
   }
 
   onResetPassword(form: NgForm) {
-    console.log(form.value);
-    // this.router.navigateByUrl('/password-reset/dummyToken498q');
     const authData: AuthData = {
       email: form.value.email,
       password: 'dummy'

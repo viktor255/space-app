@@ -81,7 +81,7 @@ exports.loginUser = (req, res, next) => {
       }
 
       let token;
-      if(fetchedUser.role === 'operator') {
+      if (fetchedUser.role === 'operator') {
         token = jwt.sign({
           email: fetchedUser.email,
           userId: fetchedUser._id
@@ -92,8 +92,6 @@ exports.loginUser = (req, res, next) => {
           userId: fetchedUser._id
         }, process.env.JWT_KEY, {expiresIn: '1h'});
       }
-
-      // console.log(fetchedUser);
       res.status(200).json({
         user: {
           email: fetchedUser.email,
@@ -111,10 +109,6 @@ exports.loginUser = (req, res, next) => {
 
 exports.validateUser = (req, res, next) => {
 
-  // Check for validation errors
-  // var errors = req.validationErrors();
-  // if (errors) return res.status(400).send(errors);
-
   // Find a matching token
   Token.findOne({token: req.params.token}, function (err, token) {
     if (!token) return res.status(400).send({msg: 'We were unable to find a valid token. Your token my have expired.'});
@@ -131,17 +125,13 @@ exports.validateUser = (req, res, next) => {
         // Delete verification token
         Token.deleteOne({_id: token._id}, function (err) {
         });
-
         res.status(200).send("The account has been verified. Please log in.");
       });
     });
   });
-
 };
 
 exports.resendValidationToken = (req, res, next) => {
-
-
   User.findOne({email: req.body.email}, function (err, user) {
     if (!user) return res.status(400).send({message: 'We were unable to find a user with that email.'});
     if (user.isVerified) return res.status(400).send({message: 'This account has already been verified. Please log in.'});

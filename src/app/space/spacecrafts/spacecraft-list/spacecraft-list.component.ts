@@ -18,7 +18,6 @@ export class SpacecraftListComponent implements OnInit {
   spacecrafts$: Observable<Spacecraft[]>;
 
   ngOnInit() {
-
     this.store.dispatch(new AllSpacecraftsRequested());
     this.spacecrafts$ = this.store.pipe(select(selectAllSpacecrafts));
   }

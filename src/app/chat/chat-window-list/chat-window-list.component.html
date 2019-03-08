@@ -1,5 +1,0 @@
-<div class='sidenav'>
-  <span (click)='newChatWindow()'>New Chat Window</span>
-  <span [class.selected]='chatWindowId === currentChatWindowId' (click)='loadChatWindow(chatWindowId)' *ngFor='let chatWindowId of chatWindows$ | async'>{{ chatWindowId }}</span>
-</div>
-

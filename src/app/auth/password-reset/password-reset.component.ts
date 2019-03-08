@@ -32,9 +32,6 @@ export class PasswordResetComponent implements OnInit {
       email: 'dummy',
       password: this.form.value.password
     };
-    console.log(authData);
-    console.log(this.token);
-
     this.store.dispatch(new ResetPassword({authData: authData, token: this.token}));
   }
 

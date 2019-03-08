@@ -8,7 +8,7 @@ import {
   Delete, DeleteSuccessful,
   SpacecraftActionTypes, Update, UpdateSuccessful
 } from './spacecraft.actions';
-import { catchError, filter, map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, tap, withLatestFrom } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Spacecraft } from '../models/spacecraft.model';
 import { AppState } from '../../reducers/index';

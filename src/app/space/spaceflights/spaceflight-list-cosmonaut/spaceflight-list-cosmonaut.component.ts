@@ -4,13 +4,12 @@ import { AppState } from '../../../reducers';
 import { Observable, Subscription } from 'rxjs';
 import { Spaceflight } from '../../models/spaceflight.model';
 import { AllSpaceflightsRequested } from '../spaceflight.actions';
-import { selectAllSpaceflights, selectCosmonautsSpaceflights } from '../spaceflight.selectors';
+import { selectCosmonautsSpaceflights } from '../spaceflight.selectors';
 import { emailSelector } from '../../../auth/auth.selector';
 import { selectCosmonautByEmail } from '../../cosmonauts/cosmonaut.selectors';
 import { Cosmonaut } from '../../models/cosmonaut.model';
 import { AllCosmonautsRequested } from '../../cosmonauts/cosmonaut.actions';
 import { AllSpacecraftsRequested } from '../../spacecrafts/spacecraft.actions';
-import { forEach } from '@angular/router/src/utils/collection';
 import { selectSpacecraftById } from '../../spacecrafts/spacecraft.selectors';
 import { take } from 'rxjs/operators';
 
@@ -39,12 +38,9 @@ export class SpaceflightListCosmonautComponent implements OnInit, OnDestroy {
     this.store.dispatch(new AllSpacecraftsRequested());
     this._userEmailSub = this.store.pipe(select(emailSelector)).subscribe(email => {
         this.userEmail = email;
-        console.log('Email is: ' + email);
         this._cosmonautSub = this.store.pipe(select(selectCosmonautByEmail(email))).subscribe((cosmonaut: Cosmonaut) => {
-          console.log(cosmonaut);
           if (cosmonaut) {
             this.spaceflights$ = this.store.pipe(select(selectCosmonautsSpaceflights(cosmonaut._id)));
-
             this._spaceflightsSub = this.spaceflights$.subscribe((spaceflights: Spaceflight[]) => {
               this.spaceflights = [];
               spaceflights.forEach((spaceflight: Spaceflight) => {
@@ -63,11 +59,8 @@ export class SpaceflightListCosmonautComponent implements OnInit, OnDestroy {
           }
 
         });
-        // console.log('Email is: ' + email);
       }
     );
-
-
   }
 
   ngOnDestroy() {

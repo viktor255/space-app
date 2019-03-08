@@ -4,12 +4,9 @@ import { AppState } from '../../../reducers';
 import { Observable, Subscription } from 'rxjs';
 import { Spaceflight } from '../../models/spaceflight.model';
 import { AllSpaceflightsRequested } from '../spaceflight.actions';
-import { selectAllSpaceflights, selectCosmonautsSpaceflights } from '../spaceflight.selectors';
+import { selectAllSpaceflights } from '../spaceflight.selectors';
 import { AllCosmonautsRequested } from '../../cosmonauts/cosmonaut.actions';
 import { AllSpacecraftsRequested } from '../../spacecrafts/spacecraft.actions';
-import { emailSelector } from '../../../auth/auth.selector';
-import { selectCosmonautByEmail } from '../../cosmonauts/cosmonaut.selectors';
-import { Cosmonaut } from '../../models/cosmonaut.model';
 import { selectSpacecraftById } from '../../spacecrafts/spacecraft.selectors';
 import { take } from 'rxjs/operators';
 

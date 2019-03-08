@@ -3,7 +3,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { AppState } from '../reducers';
-import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import {
   AuthActionTypes,
   Login,
@@ -27,7 +27,6 @@ import { defer, of } from 'rxjs';
 import { AuthData } from './auth-data.model';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { ErrorComponent } from '../error/error.component';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ConfirmationComponent } from '../confirmation/confirmation.component';
 
@@ -70,7 +69,6 @@ export class AuthEffects {
     .pipe(
       ofType<LoginSuccessful>(AuthActionTypes.LoginActionSuccessful),
       tap((action) => {
-        console.log('Login successful side effect');
         const expiresIn = action.payload.user.expiresIn - Date.now();
         this.setAuthTimer(expiresIn / 1000);
         localStorage.setItem('user', JSON.stringify(action.payload.user));

@@ -19,7 +19,7 @@
           <mat-grid-tile>
             <mat-card class="subCard">
               <mat-card-subtitle>Distance</mat-card-subtitle>
-              <mat-card-content>{{spaceflight?.distance}}</mat-card-content>
+              <mat-card-content>{{spaceflight?.distance}} km</mat-card-content>
             </mat-card>
           </mat-grid-tile>
           <mat-grid-tile>
@@ -34,13 +34,6 @@
               <mat-card-content>{{arriveTime | date: 'dd. MM. yyyy'}} (d/m/y)</mat-card-content>
             </mat-card>
           </mat-grid-tile>
-          <mat-grid-tile>
-            <mat-card class="subCard">
-              <mat-card-subtitle>is Started</mat-card-subtitle>
-              <mat-card-content>{{spaceflight?.isStarted}}</mat-card-content>
-            </mat-card>
-          </mat-grid-tile>
-
           <div *ngIf="cosmonauts$ | async as cosmonauts">
             <mat-grid-tile *ngFor="let cosmonaut of cosmonauts">
               <mat-card class="subCard">
@@ -49,7 +42,6 @@
               </mat-card>
             </mat-grid-tile>
           </div>
-
         </mat-grid-list>
       </mat-card>
 

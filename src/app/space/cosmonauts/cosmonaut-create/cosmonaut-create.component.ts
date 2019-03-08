@@ -81,8 +81,6 @@ export class CosmonautCreateComponent implements OnInit {
       };
       this.store.dispatch(new Update({cosmonaut: this.defaultCosmonaut}));
     }
-
-    console.log(this.defaultCosmonaut);
     this.router.navigateByUrl('/');
   }
 }

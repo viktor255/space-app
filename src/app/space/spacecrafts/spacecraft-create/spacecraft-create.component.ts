@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Spacecraft } from '../../models/spacecraft.model';
 import { select, Store } from '@ngrx/store';
-import { AppState } from '../../../reducers/index';
+import { AppState } from '../../../reducers';
 import { AllSpacecraftsRequested, Create, Update } from '../spacecraft.actions';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -80,8 +80,6 @@ export class SpacecraftCreateComponent implements OnInit {
     } else {
       this.store.dispatch(new Update({spacecraft: this.defaultSpacecraft}));
     }
-
-    console.log(this.defaultSpacecraft);
     this.router.navigateByUrl('/');
   }
 }

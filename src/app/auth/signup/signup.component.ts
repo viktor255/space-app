@@ -16,7 +16,6 @@ export class SignupComponent {
   }
 
   onSignup(form: NgForm) {
-    console.log(form.value);
     const authData: AuthData = {
       email: form.value.email,
       password: form.value.password

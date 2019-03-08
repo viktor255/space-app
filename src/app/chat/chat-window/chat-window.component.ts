@@ -56,9 +56,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
         this.userEmail = email;
         this.newMessage.userEmail = email;
 
-        console.log('Email is: ' + email);
         this._cosmonautSub = this.store.pipe(select(selectCosmonautByEmail(email))).subscribe((cosmonaut: Cosmonaut) => {
-          console.log(cosmonaut);
           if (cosmonaut) {
             this._spaceflightsSub = this.store.pipe(select(selectCosmonautsSpaceflights(cosmonaut._id)))
               .subscribe((spaceflights: Spaceflight[]) => {
@@ -67,7 +65,6 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
                       if (spacecraft) {
                         const arriveTime = spaceflight.startTime + (spaceflight.distance / spacecraft.speed) * 60 * 60 * 1000;
                         if (spaceflight.startTime < Date.now() && arriveTime > Date.now()) {
-                          console.log('current spaceflight found');
                           this.currentSpaceflight = spaceflight;
                           this.newMessage.spaceflightId = spaceflight._id;
                           this.messageService.getChatWindow(spaceflight._id);
@@ -85,7 +82,6 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     this.chatWindowSubscription = this.messageService.currentChatWindow$
       .subscribe(chatWindow => {
         this.chatWindow = chatWindow;
-        // console.log('currentChat changed');
       });
 
   }
@@ -98,8 +94,6 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
   }
 
   send() {
-    console.log(this.newMessage);
-    // this.messageService.sendNewMessage(this.newMessage);
     this.newMessage.timeStamp = Date.now();
     this.messageService.sendNewMessage(this.newMessage, this.chatWindow);
     this.newMessage.message = '';

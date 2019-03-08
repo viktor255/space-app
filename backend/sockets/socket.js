@@ -28,14 +28,13 @@ exports.socketAll = function (server) {
         });
     });
     socket.on("destroySpaceflightRequest", spaceflightId => {
-      // safeJoin(spaceflightId);
       io.in(spaceflightId).emit("spaceflightDestructionStarted", spaceflightId);
     });
 
-    socket.on("joinSpaceflight",  spaceflightId => {
+    socket.on("joinSpaceflight", spaceflightId => {
       safeJoin(spaceflightId);
     });
-    socket.on("leaveSpaceflight",  spaceflightId => {
+    socket.on("leaveSpaceflight", spaceflightId => {
       socket.leave(spaceflightId);
     });
 

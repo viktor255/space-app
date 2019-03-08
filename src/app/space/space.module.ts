@@ -24,8 +24,6 @@ import { spaceflightReducer } from './reducers/spaceflights.reducer';
 import { SpaceflightEffects } from './spaceflights/spaceflight.effects';
 import { SpaceflightCreateComponent } from './spaceflights/spaceflight-create/spaceflight-create.component';
 import { SpaceflightErrorComponent } from './spaceflights/spaceflight-error/spaceflight-error.component';
-import { ErrorComponent } from '../error/error.component';
-import { ConfirmationComponent } from '../confirmation/confirmation.component';
 import { MinDirective } from './directives/minDirective.directive';
 import { MaxDirective } from './directives/maxDirective.directive';
 import { DashboardCosmonautComponent } from './dashboard-cosmonaut/dashboard-cosmonaut.component';

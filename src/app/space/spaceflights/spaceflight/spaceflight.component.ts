@@ -24,6 +24,9 @@ export class SpaceflightComponent implements OnInit {
   public cosmonauts$: Observable<Cosmonaut[]>;
   public arriveTime: number;
 
+  constructor(private store: Store<AppState>) {
+  }
+
   ngOnInit() {
     if (this.spaceflight) {
       this.store.dispatch(new AllCosmonautsRequested());
@@ -37,11 +40,6 @@ export class SpaceflightComponent implements OnInit {
         }
       });
     }
-
-
-  }
-
-  constructor(private store: Store<AppState>) {
   }
 
 

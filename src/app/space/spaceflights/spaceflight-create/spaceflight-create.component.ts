@@ -52,8 +52,6 @@ export class SpaceflightCreateComponent implements OnInit {
   private foodProblemMessage: string;
   private foodProblemStarvationMessage: string;
   private weightProblemMessage: string;
-
-  private cosmonautsUnavailable: Cosmonaut[] = [];
   private cosmonautsUnavailabilityMessage = '';
 
   constructor(private store: Store<AppState>, public route: ActivatedRoute, private router: Router, private dialog: MatDialog) {
@@ -79,7 +77,6 @@ export class SpaceflightCreateComponent implements OnInit {
                 _id: spaceflight._id,
                 distance: spaceflight.distance,
                 startTime: spaceflight.startTime,
-                isStarted: false,
                 spacecraftId: undefined,
                 cosmonautsIds: []
               };
@@ -101,7 +98,6 @@ export class SpaceflightCreateComponent implements OnInit {
             _id: 'dummy',
             distance: 384400,
             startTime: Date.now(),
-            isStarted: false,
             spacecraftId: undefined,
             cosmonautsIds: []
           };
@@ -119,14 +115,10 @@ export class SpaceflightCreateComponent implements OnInit {
     this.spaceflight.startTime = new Date(this.startDate).valueOf();
     this.food = undefined;
     this.fuel = undefined;
-    console.log('On select change activated');
-    console.log('Start date from input: ' + this.startDate);
-    // console.log('This is before epocha' + this.spaceflight.startTime);
     this.arriveTime = this.spaceflight.startTime + (this.spaceflight.distance / this.selectedSpacecraft.speed) * 60 * 60 * 1000;
   }
 
   saveCosmonauts() {
-    // console.log(this.selectedCosmonauts);
     this.selectedCosmonauts.forEach(cosmonaut => {
       if (!this.spaceflight.cosmonautsIds.includes(cosmonaut._id)) {
         this.spaceflight.cosmonautsIds.push(cosmonaut._id);
@@ -177,7 +169,6 @@ export class SpaceflightCreateComponent implements OnInit {
     });
     this.currentWeight += this.selectedSpacecraft.foodBoxCapacity * (this.food / 100);
     if (this.currentWeight >= this.selectedSpacecraft.maximumLoad) {
-      console.log('Spacecraft is overloaded');
       this.weightProblem = true;
       this.weightProblemMessage = 'Spacecraft is overloaded. Change quantity of food or cosmonauts '
         + 'Current load is: ' + this.currentWeight + 'kg.'
@@ -186,8 +177,6 @@ export class SpaceflightCreateComponent implements OnInit {
       this.weightProblem = false;
       this.weightProblemMessage = '';
     }
-    console.log('Current weight is: ' + this.currentWeight);
-    console.log('Maximum load is: ' + this.selectedSpacecraft.maximumLoad);
 
   }
 
@@ -199,7 +188,6 @@ export class SpaceflightCreateComponent implements OnInit {
     const fuelNeededPercentage = Math.ceil((fuelNeeded / this.selectedSpacecraft.fuelTankCapacity) * 100);
 
     if (currentFuel < fuelNeeded) {
-      console.log('Spacecraft has not enough fuel');
       this.fuelProblem = true;
       if (fuelNeeded > this.selectedSpacecraft.fuelTankCapacity) {
         this.fuelProblemMessage = 'This spacecraft can not fly that far. '
@@ -214,8 +202,6 @@ export class SpaceflightCreateComponent implements OnInit {
       this.fuelProblem = false;
       this.fuelProblemMessage = '';
     }
-    // console.log('Current fuel is: ' + currentFuel);
-    // console.log('Fuel needed for this flight is: ' + fuelNeeded);
   }
 
   calculateFood() {
@@ -232,7 +218,6 @@ export class SpaceflightCreateComponent implements OnInit {
       } else {
         foodNeededHungry += cosmonaut.foodConsumption * travelTimeHours;
       }
-      console.log('Age of cosmonaut ' + cosmonaut.name + ' is: ' + this.getAge(cosmonaut.dateOfBirth));
     });
     foodNeeded = Math.ceil(foodNeeded);
     foodNeededHungry = Math.ceil(foodNeededHungry);
@@ -241,7 +226,6 @@ export class SpaceflightCreateComponent implements OnInit {
     const foodNeededPercentage = Math.ceil((foodNeeded / this.selectedSpacecraft.foodBoxCapacity) * 100);
 
     if (currentFood < foodNeeded && currentFood > foodNeededHungry) {
-      console.log('Young cosmonauts will starve for max 30% of time');
       this.foodProblemStarvation = true;
       this.foodProblemStarvationMessage = 'Young cosmonauts will starve for max 30% of time. Fill up to at least '
         + foodNeededPercentage + '%.'
@@ -252,7 +236,6 @@ export class SpaceflightCreateComponent implements OnInit {
       this.foodProblemStarvation = false;
     }
     if (currentFood < foodNeededHungry) {
-      console.log('Spacecraft has not enough food');
       this.foodProblem = true;
 
       if (foodNeededHungry > this.selectedSpacecraft.foodBoxCapacity) {
@@ -272,39 +255,25 @@ export class SpaceflightCreateComponent implements OnInit {
       this.foodProblem = false;
       this.foodProblemMessage = '';
     }
-    console.log('Current food is: ' + currentFood);
-    console.log('Food needed for this flight without starvation is: ' + foodNeeded);
-    console.log('Food needed for this flight with starvation is: ' + foodNeededHungry);
   }
 
   calculateCosmonautsAvailability() {
     this.cosmonautsUnavailabilityMessage = '';
     this.cosmonautUnavailableProblem = false;
-    // this.selectedCosmonauts.forEach(cosmonaut => {});
     this.spaceflights$.subscribe((spaceflights: Spaceflight[]) => {
-      // console.log('spaceflights all ' + spaceflights);
       spaceflights.forEach((otherSpaceflight) => {
         if (this.spaceflightId === otherSpaceflight._id) {
           return;
         }
-        // console.log('This will be other Spaceflight');
-        // console.log(otherSpaceflight);
         const otherSpacecraft$ = this.store.pipe(select(selectSpacecraftById(otherSpaceflight.spacecraftId)));
         otherSpacecraft$.subscribe(otherSpacecraft => {
           const otherArriveTime = otherSpaceflight.startTime + (otherSpaceflight.distance / otherSpacecraft.speed) * 60 * 60 * 1000;
-          // console.log('This is other arriveTime ' + otherArriveTime);
-
           this.selectedCosmonauts.forEach((thisSpaceflightCosmonaut) => {
             otherSpaceflight.cosmonautsIds.forEach((otherSpaceflightCosmonautId) => {
-              // console.log('This should happen 4 times');
               if (thisSpaceflightCosmonaut._id === otherSpaceflightCosmonautId) {
-                // console.log('Cosmonauts id match found');
                 if (otherSpaceflight.startTime < this.spaceflight.startTime) {
-                  // console.log('Other starts first');
-                  // console.log('This spaceflight start time ' + this.spaceflight.startTime);
                   if (otherArriveTime > this.spaceflight.startTime) {
                     console.log(thisSpaceflightCosmonaut.name + ' is unavailable at given time.');
-                    this.cosmonautsUnavailable.push(thisSpaceflightCosmonaut);
                     this.cosmonautUnavailableProblem = true;
                     this.cosmonautsUnavailabilityMessage = this.cosmonautsUnavailabilityMessage
                       + thisSpaceflightCosmonaut.name + ' is unavailable at given time. ';
@@ -313,10 +282,7 @@ export class SpaceflightCreateComponent implements OnInit {
                     this.cosmonautsUnavailabilityMessage = '';
                   }
                 } else {
-                  // console.log('This starts first');
                   if (this.arriveTime > otherSpaceflight.startTime) {
-                    console.log(thisSpaceflightCosmonaut.name + ' is unavailable at given time.');
-                    this.cosmonautsUnavailable.push(thisSpaceflightCosmonaut);
                     this.cosmonautUnavailableProblem = true;
                     this.cosmonautsUnavailabilityMessage = this.cosmonautsUnavailabilityMessage
                       + thisSpaceflightCosmonaut.name + ' is unavailable at given time. ';
@@ -365,10 +331,8 @@ export class SpaceflightCreateComponent implements OnInit {
     if (form.invalid) {
       return;
     }
-
     this.processSpacecraft();
     if (!this.checkProblems()) {
-      console.log('Ready to start!');
       this.updateSpacecraftWithFuelAndFood();
       if (this.mode === 'Create') {
         this.store.dispatch(new Create({spaceflight: this.spaceflight}));
@@ -376,8 +340,6 @@ export class SpaceflightCreateComponent implements OnInit {
         this.store.dispatch(new Update({spaceflight: this.spaceflight}));
       }
       this.router.navigateByUrl('/');
-    } else {
-      console.log('Cannot start problem is there');
     }
   }
 }

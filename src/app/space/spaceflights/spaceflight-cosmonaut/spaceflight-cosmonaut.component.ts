@@ -9,8 +9,6 @@ import { select, Store } from '@ngrx/store';
 import { selectSpacecraftById } from '../../spacecrafts/spacecraft.selectors';
 import { selectCosmonautsByIds } from '../../cosmonauts/cosmonaut.selectors';
 import { AppState } from '../../../reducers';
-import { Delete } from '../spaceflight.actions';
-import { SpaceflightsService } from '../services/spaceflights.service';
 
 @Component({
   selector: 'app-spaceflight-cosmonaut',
@@ -23,6 +21,9 @@ export class SpaceflightCosmonautComponent implements OnInit {
   public spacecraft$: Observable<Spacecraft>;
   public cosmonauts$: Observable<Cosmonaut[]>;
   public arriveTime: number;
+
+  constructor(private store: Store<AppState>) {
+  }
 
   ngOnInit() {
     if (this.spaceflight) {
@@ -37,18 +38,5 @@ export class SpaceflightCosmonautComponent implements OnInit {
         }
       });
     }
-
-
   }
-
-  constructor(private store: Store<AppState>, private spaceflightsService: SpaceflightsService) {
-  }
-
-
-  onDelete() {
-    // this.store.dispatch(new Delete({_id: this.spaceflight._id}));
-    console.log('Autodestruction started');
-  }
-
-
 }

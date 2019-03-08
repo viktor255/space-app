@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { AppState } from '../../../reducers/index';
+import { AppState } from '../../../reducers';
 import { Observable } from 'rxjs';
 import { Cosmonaut } from '../../models/cosmonaut.model';
 import { AllCosmonautsRequested } from '../cosmonaut.actions';
@@ -18,7 +18,6 @@ export class CosmonautListComponent implements OnInit {
   cosmonauts$: Observable<Cosmonaut[]>;
 
   ngOnInit() {
-
     this.store.dispatch(new AllCosmonautsRequested());
     this.cosmonauts$ = this.store.pipe(select(selectAllCosmonauts));
   }

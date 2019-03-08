@@ -26,7 +26,10 @@ export class DestructionWarningComponent implements OnInit, OnDestroy {
   private _spacecraftSub: Subscription;
   public spacecraft: Spacecraft;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { spaceflightId: string }, private store: Store<AppState>, private spaceflightsService: SpaceflightsService) {
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { spaceflightId: string },
+    private store: Store<AppState>,
+    private spaceflightsService: SpaceflightsService) {
   }
 
   ngOnInit() {
@@ -50,7 +53,6 @@ export class DestructionWarningComponent implements OnInit, OnDestroy {
   }
 
   destroySpacecraft() {
-    // console.log('teraz som sa pustil');
     this.spaceflightsService.destroySpaceflight(this.data.spaceflightId);
   }
 
