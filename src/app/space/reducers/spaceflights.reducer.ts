@@ -23,6 +23,9 @@ export function spaceflightReducer(state: SpaceflightState = initialSpaceflightS
     case SpaceflightActionTypes.DeleteActionSuccessful: {
       return adapter.removeOne(action.payload._id, state);
     }
+    case SpaceflightActionTypes.DestroyActionSuccessful: {
+      return adapter.removeOne(action.payload._id, state);
+    }
     case SpaceflightActionTypes.UpdateActionSuccessful: {
       return adapter.updateOne({id: action.payload.spaceflight._id, changes: action.payload.spaceflight}, state);
     }

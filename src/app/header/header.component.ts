@@ -5,7 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { isLoggedIn, roleSelector } from '../auth/auth.selector';
 import { Logout } from '../auth/auth.actions';
 import { SpaceflightsService } from '../space/spaceflights/services/spaceflights.service';
-import { DestroyRequest } from '../space/spaceflights/spaceflight.actions';
+import { DestroyRequest, DestroySuccessful } from '../space/spaceflights/spaceflight.actions';
 
 @Component({
   selector: 'app-header',
@@ -27,11 +27,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.role$ = this.store.pipe(select(roleSelector));
     this._roleSub = this.role$.subscribe(role => this.role = role);
     this.spaceflightsService.spaceflightDestructionStarted$.subscribe(spaceflightId => {
-      console.log('spaceflight destroy request - from header');
       this.store.dispatch(new DestroyRequest({_id: spaceflightId}));
     });
     this.spaceflightsService.spaceflightDestroyed$.subscribe(spaceflightId => {
-      location.reload();
+      this.store.dispatch(new DestroySuccessful({_id: spaceflightId}));
     });
   }
 

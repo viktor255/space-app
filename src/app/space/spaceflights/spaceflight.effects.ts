@@ -109,7 +109,7 @@ export class SpaceflightEffects {
       })
     );
   @Effect({dispatch: false})
-  destroySpaceflightSuccesfull$ = this.actions$
+  destroySpaceflightSuccessful$ = this.actions$
     .pipe(
       ofType<DestroySuccessful>(SpaceflightActionTypes.DestroyActionSuccessful),
       tap((action) => {

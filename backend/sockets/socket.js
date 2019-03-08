@@ -6,13 +6,6 @@ exports.socketAll = function (server) {
   const io = require('socket.io')(server);
 
   io.on("connection", socket => {
-    let previousId;
-
-    const safeJoin = currentId => {
-      socket.leave(previousId);
-      socket.join(currentId);
-      previousId = currentId;
-    };
 
     socket.on("destroySpaceflight", spaceflightId => {
       Spaceflight.deleteOne({_id: spaceflightId})
@@ -28,19 +21,18 @@ exports.socketAll = function (server) {
         });
     });
     socket.on("destroySpaceflightRequest", spaceflightId => {
-      safeJoin(spaceflightId);
       io.in(spaceflightId).emit("spaceflightDestructionStarted", spaceflightId);
     });
 
     socket.on("joinSpaceflight", spaceflightId => {
-      safeJoin(spaceflightId);
+      socket.join(spaceflightId);
     });
     socket.on("leaveSpaceflight", spaceflightId => {
-      socket.leave(spaceflightId);
+      // socket.leave(spaceflightId);
     });
 
     socket.on("getChatWindow", spaceflightId => {
-      safeJoin(spaceflightId);
+      socket.join(spaceflightId);
       Message.find({spaceflightId: spaceflightId}).then(messages => {
         const chatWindow = {
           id: spaceflightId,

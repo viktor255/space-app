@@ -99,5 +99,5 @@ export type SpaceflightActions =
   | DeleteSuccessful
   | UpdateSuccessful
   | DestroyRequest
-  | DeleteSuccessful
+  | DestroySuccessful
   | BackendError;
