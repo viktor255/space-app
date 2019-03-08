@@ -11,6 +11,7 @@ You can see deployed demo at [Heroku](https://space-app-backend.herokuapp.com/)
 
 This project was made in my free time. As a way to learn new technologies.
 Redux pattern implemented with ngrx store. For websocket implementations was used Socket.io
+Angular, Nodejs, Express, MongoDB, Mongoose.
 
 ## Development server
 
@@ -22,3 +23,13 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 2. `ng build` or `ng build --prod`
 3. `npm run start:server`
 4. Navigate to `http://localhost:3000/`
+
+To run this you need to create `nodemon.json` file in root with env variables
+{
+  "env": {
+    "MONGO_ATLAS_PW": "",
+    "JWT_KEY": "",
+    "JWT_KEY_OPERATOR": "",
+    "SENDGRID_PW": ""
+  }
+}
