@@ -10,8 +10,8 @@ Cosmonauts can see their spaceflights and they can use chat on ongoing one. They
 You can see deployed demo at [Heroku](https://space-app-backend.herokuapp.com/)
 
 This project was made in my free time. As a way to learn new technologies.
-Redux pattern implemented with ngrx store. For websocket implementations was used Socket.io
-Angular, Nodejs, Express, MongoDB, Mongoose.
+Redux pattern implemented with ngrx store. For websocket implementations was used Socket.io.
+Other technologies Angular, Nodejs, Express, MongoDB, Mongoose.
 
 ## Development server
 
