@@ -120,7 +120,6 @@ export class SpaceflightLiveComponent implements OnInit, OnDestroy {
     this._spacecraftSub.unsubscribe();
     this._cosmonautsSub.unsubscribe();
     this._timerSub.unsubscribe();
-    // this.spaceflightsService.leaveSpaceflightSocket(this.spaceflight._id);
   }
 
 }

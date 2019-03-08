@@ -28,7 +28,7 @@ exports.socketAll = function (server) {
       socket.join(spaceflightId);
     });
     socket.on("leaveSpaceflight", spaceflightId => {
-      // socket.leave(spaceflightId);
+      socket.leave(spaceflightId);
     });
 
     socket.on("getChatWindow", spaceflightId => {
